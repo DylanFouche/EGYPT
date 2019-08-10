@@ -4,6 +4,7 @@ import matplotlib.pyplot as plt
 import traceback
 import numpy as np
 
+
 def main():
 	#get command line params
 	if(len(sys.argv)!=5):
@@ -39,6 +40,34 @@ def main():
 	plt.colorbar()
 	plt.title("Agent positions")
 	plt.show()
+	# to get series of Gini coefficients as DataFrame from datacollector
+	gini = model.datacollector.get_model_vars_dataframe()
+	gini.plot()
+	plt.title("Gini coefficient")
+	plt.show()
+
+	#batchrunner - not quite functioning as I would like
+	# TODO
+	fixed_params = {
+		"w": 100,
+		"h": 100
+	}
+	variable_params = {"n": range(10, 500, 10)}
+	# The variables parameters will be invoke along with the fixed parameters allowing for either or both to be honored.
+	batch_run = BatchRunner(
+		egyptModel,
+		variable_params,
+		fixed_params,
+		iterations=5,
+		max_steps=100,
+		model_reporters={"Gini": compute_gini}
+	)
+	batch_run.run_all()
+	run_data = batch_run.get_model_vars_dataframe()
+	run_data.head()
+	plt.scatter(run_data.n, run_data.Gini)
+	plt.title("Gini coefficient iterations")
+	plt.show()
 
 if __name__ == "__main__":
 	try:
@@ -50,3 +79,4 @@ if __name__ == "__main__":
 		print("Some other error occurred:")
 		print(traceback.print_exc())
 		quit()
+

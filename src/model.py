@@ -1,6 +1,21 @@
 from mesa import Agent, Model
 from mesa.time import RandomActivation
 from mesa.space import MultiGrid
+from mesa.datacollection import DataCollector
+from mesa.batchrunner import BatchRunner
+
+# data collector methods
+def compute_gini(model):
+    agent_wealths = [agent.wealth for agent in model.schedule.agents]
+    x = sorted(agent_wealths)
+    N = model.num_agents
+    B = sum(xi * (N - i) for i, xi in enumerate(x)) / (N * sum(x))
+    return (1 + (1 / N) - 2 * B)
+
+def compute_meanPopulation(model):
+    # TODO
+    agent_population = [agent.num for agent in model.schedule.agents]
+    N = model.num_agents
 
 class egyptAgent(Agent):
     '''A household with random initial wealth'''
@@ -34,7 +49,9 @@ class egyptModel(Model):
         # Create scheduler
         self.schedule = RandomActivation(self)
         # Create grid
-        self.grid = MultiGrid(w, h, False) #grid is not toroidal
+        self.grid = MultiGrid(w, h, False) #grid is not toroidal <-- what does this mean?
+        self.running = True #BatchRunner set true
+
         # Create agents
         for i in range(self.num_agents):
             agent = egyptAgent(i, self)
@@ -45,6 +62,15 @@ class egyptModel(Model):
             y = self.random.randrange(self.grid.height)
             self.grid.place_agent(agent, (x, y))
 
+            #data collection
+            self.datacollector = DataCollector(
+                # compute gini coefficient - done in datacollector class
+                model_reporters = {"Gini": compute_gini })
+                #agent_reporters = {"Wealth": "wealth"} )
+
     def step(self):
         '''Advance the model by one tick.'''
+        #collect this step's data
+        self.datacollector.collect(self)
         self.schedule.step()
+
