@@ -1,14 +1,27 @@
 # EGYPT
 CSC3002S Capstone Project
 
-## Usage
-Note that the default width and heigh values for the NetLogo source are 31 and 30 respectively.
-```Bash 
-python3 src/simulations/single_simulation.py [num_agents] [num_steps] [grid_width] [grid_height]
+## Quick start
+Run the following commands from the project root directory.
+
+### 1. Install requirements
+```bash
+pip3 install -r requirements.txt
 ```
 
-## Dependencies
-mesa, numpy, matplotlib
+### 2. Append src directory to PYTHONPATH
 ```bash
-pip install matplotlib numpy mesa
+export PYTHONPATH=$PYTHONPATH:`pwd`:`pwd`/src
 ```
+
+### 3. Run simulation
+```bash
+python3 src/simulations/single_simulation.py 100 100 31 30
+```
+
+## Usage
+
+```bash 
+python3 src/simulations/single_simulation.py [num_agents] [num_steps] [grid_width] [grid_height]
+```
+Note that the default width and height values from the NetLogo source are 31 and 30 respectively.
