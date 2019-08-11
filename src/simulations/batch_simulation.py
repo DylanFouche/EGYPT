@@ -1,6 +1,6 @@
 from mesa.batchrunner import BatchRunner
 import egypt_utils
-from egypt_model import EgyptModel, compute_gini
+from egypt_model import EgyptModel, compute_gini, compute_population
 
 # batchrunner - not quite functioning as I would like
 # TODO
@@ -16,7 +16,10 @@ batch_run = BatchRunner(
     fixed_params,
     iterations=5,
     max_steps=100,
-    model_reporters={"Gini": compute_gini}
+    model_reporters={
+        "Gini": compute_gini,
+        "Population": compute_population
+    }
 )
 batch_run.run_all()
 

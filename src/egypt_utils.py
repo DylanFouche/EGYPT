@@ -46,7 +46,12 @@ def plot_model_variable_graphs(model: EgyptModel):
 
 def plot_batch_run_variable_graphs(batch_run: BatchRunner):
     run_data = batch_run.get_model_vars_dataframe()
-    run_data.head()
+    plt.subplot(1, 2, 1)
     plt.scatter(run_data.n, run_data.Gini)
     plt.title("Gini coefficient iterations")
+
+    plt.subplot(1, 2, 2)
+    plt.scatter(run_data.n, run_data.Population)
+    plt.title("Population iterations")
+    
     plt.show()

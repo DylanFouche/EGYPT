@@ -27,10 +27,8 @@ def compute_gini(model):
     return (1 + (1 / N) - 2 * B)
 
 
-def compute_meanPopulation(model):
-    # TODO
-    agent_population = [agent.num for agent in model.schedule.agents]
-    N = model.num_agents
+def compute_population(model):
+    return sum([household.workers for household in model.schedule.agents])
 
 
 class HouseholdAgent(Agent):
@@ -43,7 +41,6 @@ class HouseholdAgent(Agent):
         self.grain = starting_grain
 
     def step(self):
-        # TODO
         self.farm()
         self.eat()
 
