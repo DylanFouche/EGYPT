@@ -3,7 +3,7 @@ CSC3002S Capstone Project
 
 ## Usage
 ```Bash 
-$python3 ./src/egypt.py [num_agents] [num_steps] [grid_width] [grid_height]
+$python3 src/simulations/single_simulation.py [num_agents] [num_steps] [grid_width] [grid_height]
 ```
 
 ## Dependencies
