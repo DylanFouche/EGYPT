@@ -9,8 +9,7 @@ def visualise_model_state(model: EgyptModel):
     
     # visualise agent wealth
     plt.subplot(1, 2, 1)
-    agent_wealth = [agent.wealth for agent in model.schedule.agents]
-    colours = ["alive" if agent.wealth > 0 else "dead" for agent in model.schedule.agents]
+    agent_wealth = [agent.grain for agent in model.schedule.agents]
     N, bins, patches = plt.hist(agent_wealth)
     plt.title("Agent wealth distribution")
     plt.xlabel("Wealth")
@@ -20,11 +19,15 @@ def visualise_model_state(model: EgyptModel):
     
     # visualise agent position
     plt.subplot(1, 2, 2)
-    agent_counts = np.zeros((model.grid.width, model.grid.height))
+    agent_counts = np.zeros((model.grid.height, model.grid.width))
     for cell in model.grid.coord_iter():
-        cell_content, x, y = cell
-        agent_count = len(cell_content)
-        agent_counts[x][y] = agent_count
+        agent, x, y = cell
+        if agent is None:
+            agent_count = 0
+        else:
+            agent_count = agent.grain
+        agent_counts[y][x] = agent_count
+
     plt.imshow(agent_counts, interpolation='nearest')
     plt.colorbar()
     plt.title("Agent positions")

@@ -3,7 +3,7 @@ import egypt_utils
 from egypt_model import EgyptModel
 
 # get command line params
-if (len(sys.argv) != 5):
+if len(sys.argv) != 5:
     print("Usage:\t$python3 src/simulations/single_simulation.py [num_agents] [num_steps] [grid_width] [grid_height]")
     quit()
 else:
