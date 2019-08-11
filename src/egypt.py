@@ -1,4 +1,5 @@
 import sys
+from mesa.batchrunner import BatchRunner
 from model import *
 import matplotlib.pyplot as plt
 import traceback
@@ -16,7 +17,7 @@ def main():
 		grid_width = int(sys.argv[3])
 		grid_height = int(sys.argv[4])
 	#create and run model
-	model = egyptModel(num_agents, grid_width, grid_height)
+	model = EgyptModel(num_agents, grid_width, grid_height)
 	for i in range(num_steps):
 		model.step()
 	#visualise agent wealth
@@ -33,9 +34,9 @@ def main():
 	plt.subplot(1,2,2)
 	agent_counts = np.zeros((model.grid.width, model.grid.height))
 	for cell in model.grid.coord_iter():
-	    cell_content, x, y = cell
-	    agent_count = len(cell_content)
-	    agent_counts[x][y] = agent_count
+		cell_content, x, y = cell
+		agent_count = len(cell_content)
+		agent_counts[x][y] = agent_count
 	plt.imshow(agent_counts, interpolation='nearest')
 	plt.colorbar()
 	plt.title("Agent positions")
@@ -52,10 +53,10 @@ def main():
 		"w": 100,
 		"h": 100
 	}
-	variable_params = {"n": range(10, 500, 10)}
+	variable_params = {"n": range(10, 100, 10)}
 	# The variables parameters will be invoke along with the fixed parameters allowing for either or both to be honored.
 	batch_run = BatchRunner(
-		egyptModel,
+		EgyptModel,
 		variable_params,
 		fixed_params,
 		iterations=5,
@@ -68,6 +69,7 @@ def main():
 	plt.scatter(run_data.n, run_data.Gini)
 	plt.title("Gini coefficient iterations")
 	plt.show()
+
 
 if __name__ == "__main__":
 	try:
