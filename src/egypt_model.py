@@ -52,6 +52,7 @@ class HouseholdAgent(Agent):
         self.grain -= self.workers * ANNUAL_PER_PERSON_GRAIN_CONSUMPTION
         if self.grain <= 0:
             self.workers -= 1
+            self.grain = 0
             if self.workers <= 0:
                 self.model.grid.remove_agent(self)
                 self.model.schedule.remove(self)
@@ -94,8 +95,12 @@ class EgyptGrid(SingleGrid):
 class EgyptModel(Model):
     """A model that aggregates n agents"""
 
-    def __init__(self, n, w, h):
+    def __init__(self, n, w, h, starting_household_size, starting_grain, min_competency):
         self.num_agents = n
+        self.starting_household_size = starting_household_size
+        self.starting_grain = starting_grain
+        self.min_competency = min_competency
+        
         # Create scheduler
         self.schedule = RandomActivation(self)
         # Create grid
@@ -106,9 +111,9 @@ class EgyptModel(Model):
         for i in range(self.num_agents):
             agent = HouseholdAgent(
                 unique_id=i,
-                starting_size=STARTING_HOUSEHOLD_SIZE,
-                competency=self.random.uniform(MIN_COMPETENCY, 1.0),
-                starting_grain=STARTING_GRAIN,
+                starting_size=starting_household_size,
+                competency=self.random.uniform(min_competency, 1.0),
+                starting_grain=starting_grain,
                 model=self
             )
             self.schedule.add(agent)  # add agent to scheduler
@@ -117,7 +122,7 @@ class EgyptModel(Model):
             # data collection
             self.datacollector = DataCollector(
                 # compute gini coefficient - done in datacollector class
-                model_reporters = {"Gini": compute_gini })
+                model_reporters = {'Gini': compute_gini, 'total_population': compute_population})
                 # agent_reporters = {"Wealth": "wealth"} )
 
     def step(self):
