@@ -9,10 +9,6 @@ from math import sqrt, pi, e
 PATCH_MAX_POTENTIAL_YIELD = 2475
 ANNUAL_PER_PERSON_GRAIN_CONSUMPTION = 160
 
-# values adjustable by sliders in NetLogo source
-STARTING_HOUSEHOLD_SIZE = 5
-STARTING_GRAIN = 2000
-MIN_COMPETENCY = 0.5
 
 # data collector methods
 def compute_gini(model):
@@ -102,7 +98,7 @@ class EgyptGrid(SingleGrid):
 class EgyptModel(Model):
     """A model that aggregates n agents"""
 
-    def __init__(self, n, w, h, starting_household_size, starting_grain, min_competency):
+    def __init__(self, n, w, h, starting_household_size=5, starting_grain=2000, min_competency=0.5):
         self.num_agents = n
         self.starting_household_size = starting_household_size
         self.starting_grain = starting_grain
