@@ -19,7 +19,7 @@ def compute_gini(model):
     agent_wealths = [agent.grain for agent in model.schedule.agents]
     x = sorted(agent_wealths)
     N = model.num_agents
-    
+
     if N * sum(x) == 0:
         return 0
 
@@ -70,6 +70,13 @@ class EgyptGrid(SingleGrid):
 
         self.fertility = np.zeros((height, width))
         self.flood()  # initialise fertility values
+
+        #show fertility map
+        """
+        from matplotlib import pyplot as plt
+        plt.imshow(self.fertility)
+        plt.show()
+        """
 
     def flood(self):
         """Simulates nile flood. Assigns new patch fertility values."""
