@@ -19,3 +19,4 @@ for i in range(num_steps):
 
 egypt_utils.visualise_model_state(model)
 egypt_utils.plot_model_variable_graphs(model)
+egypt_utils.show_graphs()

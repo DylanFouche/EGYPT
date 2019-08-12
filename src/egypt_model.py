@@ -22,7 +22,7 @@ def compute_gini(model):
     
     if N * sum(x) == 0:
         return 0
-    
+
     B = sum(xi * (N - i) for i, xi in enumerate(x)) / (N * sum(x))
     return (1 + (1 / N) - 2 * B)
 
@@ -55,21 +55,22 @@ class HouseholdAgent(Agent):
             if self.workers <= 0:
                 self.model.grid.remove_agent(self)
                 self.model.schedule.remove(self)
+                self.model.num_agents -= 1
 
 
 class EgyptGrid(SingleGrid):
     """A MESA grid containing the fertility values for patches of land"""
-    
+
     def __init__(self, width, height, model):
         super().__init__(width, height, torus=False)
-        
+
         self.width = width
         self.height = height
         self.random = model.random
-        
+
         self.fertility = np.zeros((height, width))
         self.flood()  # initialise fertility values
-    
+
     def flood(self):
         """Simulates nile flood. Assigns new patch fertility values."""
 
@@ -124,4 +125,3 @@ class EgyptModel(Model):
         # collect this step's data
         self.datacollector.collect(self)
         self.schedule.step()
-
