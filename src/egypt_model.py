@@ -9,7 +9,6 @@ from math import sqrt, pi, e
 PATCH_MAX_POTENTIAL_YIELD = 2475
 ANNUAL_PER_PERSON_GRAIN_CONSUMPTION = 160
 
-
 # data collector methods
 def compute_gini(model):
     agent_wealths = [agent.grain for agent in model.schedule.agents]
@@ -36,17 +35,22 @@ class HouseholdAgent(Agent):
         self.competency = competency
         self.ambition = ambition
         self.grain = starting_grain
+        self.generation_changeover_countdown = self.random.randint(10,15)
 
     def step(self):
         self.farm()
         self.eat()
         self.population_shift()
+        self.generation_changeover()
 
     def farm(self):
+        """ Grain yield is a function of field fertility and worker competency """
         x, y = self.pos
-        self.grain += PATCH_MAX_POTENTIAL_YIELD * self.model.grid.fertility[y, x] * self.competency
+        # 1/8 of the max yield reserved for seeding the field
+        self.grain += (PATCH_MAX_POTENTIAL_YIELD * self.model.grid.fertility[y, x] * self.competency) - (0.125 * PATCH_MAX_POTENTIAL_YIELD)
 
     def eat(self):
+        """ Consume grain per worker. Workers die if not enough grain. Household removed if no more workers. """
         self.grain -= self.workers * ANNUAL_PER_PERSON_GRAIN_CONSUMPTION
         if self.grain <= 0:
             self.workers -= 1
@@ -57,11 +61,45 @@ class HouseholdAgent(Agent):
                 self.model.num_agents -= 1
 
     def population_shift(self):
-        # TODO
+        """ Increase population stochastically in proportion to the population growth rate """
         populate_chance = self.random.uniform(0,1)
         #criteria for increasing population as per netLogo implementation
         if (compute_population(self.model) <= (self.model.initial_population * (1 + (self.model.population_growth_rate / 100)) ** self.model.ticks)) and (populate_chance > 0.5):
             self.workers += 1
+
+    def generation_changeover(self):
+        """ Change competency and ambition values every 10-15 years to simulate a new head of household """
+        self.generation_changeover_countdown -= 1
+        if self.generation_changeover_countdown <= 0:
+            #reset generation changeover countdown
+            self.generation_changeover_countdown = self.random.randint(10,15)
+            #generate and set new competency value
+            competency_change = self.random.uniform(0,self.model.generational_variation)
+            decrease_chance = self.random.uniform(0,1)
+            if decrease_chance < 0.5:
+                competency_change *= -1
+            new_competency = self.competency + competency_change
+            while new_competency > 1 or new_competency < self.model.min_competency:
+                competency_change = self.random.uniform(0,self.model.generational_variation)
+                decrease_chance = self.random.uniform(0,1)
+                if decrease_chance < 0.5:
+                    competency_change *= -1
+                new_competency = self.competency + competency_change
+            self.competency = new_competency
+            #generate and set new ambition value
+            ambition_change = self.random.uniform(0,self.model.generational_variation)
+            decrease_chance = self.random.uniform(0,1)
+            if decrease_chance < 0.5:
+                ambition_change *= -1
+            new_ambition = self.ambition + ambition_change
+            while new_ambition > 1 or new_ambition < self.model.min_ambition:
+                ambition_change = self.random.uniform(0,self.model.generational_variation)
+                decrease_chance = self.random.uniform(0,1)
+                if decrease_chance < 0.5:
+                    ambition_change *= -1
+                new_ambition = self.ambition + ambition_change
+            self.ambition = new_ambition
+
 
 class EgyptGrid(SingleGrid):
     """A MESA grid containing the fertility values for patches of land"""
@@ -106,7 +144,7 @@ class EgyptGrid(SingleGrid):
 class EgyptModel(Model):
     """A model that aggregates n agents"""
 
-    def __init__(self, n, w, h, starting_household_size=5, starting_grain=2000, min_competency=0.5, min_ambition=0.5, population_growth_rate=0.25):
+    def __init__(self, n, w, h, starting_household_size=5, starting_grain=2000, min_competency=0.5, min_ambition=0.5, population_growth_rate=0.25, generational_variation=0.5):
         self.num_agents = n
         self.starting_household_size = starting_household_size
         self.starting_grain = starting_grain
@@ -114,6 +152,7 @@ class EgyptModel(Model):
         self.min_ambition = min_ambition
         self.population_growth_rate = population_growth_rate
         self.initial_population = n * starting_household_size
+        self.generational_variation = generational_variation
         self.ticks = 0
 
         # Create scheduler
