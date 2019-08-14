@@ -5,7 +5,7 @@ from mesa.datacollection import DataCollector
 import numpy as np
 from math import sqrt, pi, e
 
-# values hardcoded into NetLogo source
+# constants in NetLogo source
 PATCH_MAX_POTENTIAL_YIELD = 2475
 ANNUAL_PER_PERSON_GRAIN_CONSUMPTION = 160
 
@@ -14,20 +14,17 @@ def compute_gini(model):
     agent_wealths = [agent.grain for agent in model.schedule.agents]
     x = sorted(agent_wealths)
     N = model.num_agents
-
     if N * sum(x) == 0:
         return 0
-
     B = sum(xi * (N - i) for i, xi in enumerate(x)) / (N * sum(x))
     return (1 + (1 / N) - 2 * B)
-
 
 def compute_population(model):
     return sum([household.workers for household in model.schedule.agents])
 
 
 class HouseholdAgent(Agent):
-    """A household with random initial wealth"""
+    """A household that aggregates n workers"""
 
     def __init__(self, unique_id, starting_size, competency, ambition, starting_grain, model):
         super().__init__(unique_id, model)
@@ -38,19 +35,25 @@ class HouseholdAgent(Agent):
         self.generation_changeover_countdown = self.random.randint(10,15)
 
     def step(self):
+        self.model.grid.flood()
         self.farm()
         self.eat()
-        self.population_shift()
+        self.grain_loss()
         self.generation_changeover()
+        self.population_shift()
 
     def farm(self):
-        """ Grain yield is a function of field fertility and worker competency """
+        """ Increase grain in proportion to field fertility and worker competency """
         x, y = self.pos
         # 1/8 of the max yield reserved for seeding the field
         self.grain += (PATCH_MAX_POTENTIAL_YIELD * self.model.grid.fertility[y, x] * self.competency) - (0.125 * PATCH_MAX_POTENTIAL_YIELD)
 
+    def grain_loss(self):
+        """ Accounts for typical annual storage loss of agricultural product """
+        self.grain -= self.grain * 0.1
+
     def eat(self):
-        """ Consume grain per worker. Workers die if not enough grain. Household removed if no more workers. """
+        """ Each worker consumes grain. Workers die if insufficient grain. Household removed if all workers are dead. """
         self.grain -= self.workers * ANNUAL_PER_PERSON_GRAIN_CONSUMPTION
         if self.grain <= 0:
             self.workers -= 1
@@ -106,39 +109,29 @@ class EgyptGrid(SingleGrid):
 
     def __init__(self, width, height, model):
         super().__init__(width, height, torus=False)
-
         self.width = width
         self.height = height
         self.random = model.random
-
         self.fertility = np.zeros((height, width))
         self.flood()  # initialise fertility values
 
-        #show fertility map
-        """
-        from matplotlib import pyplot as plt
-        plt.imshow(self.fertility)
-        plt.show()
-        """
 
     def flood(self):
         """Simulates nile flood. Assigns new patch fertility values."""
-
         # Set fertility values according to normal distribution probability density function
-        # https://en.wikipedia.org/wiki/Normal_distribution
-
-        # All patches in a column have the same fertility
-
+        # see https://en.wikipedia.org/wiki/Normal_distribution
         # the mean and standard deviation value ranges are according to NetLogo source code
-        mu = self.random.randint(5, 14)  # random integer from 5 to 14 (inclusive of both 5 and 14)
+        mu = self.random.randint(5, 14)
         sigma = self.random.randint(5, 9)
-
         alpha = 2 * sigma ** 2
         beta = 1 / (sigma * sqrt(2 * pi))
-
         # as per NetLogo code
         for x in range(self.width):
-            self.fertility[:, x] = 17 * (beta * (e ** (-(x - mu) ** 2 / alpha)))  # assign fertility value to column x
+            # assign fertility value to column x
+            self.fertility[:, x] = 17 * (beta * (e ** (-(x - mu) ** 2 / alpha)))
+        from matplotlib import pyplot as plt
+        plt.imshow(self.fertility)
+        plt.show()
 
 
 class EgyptModel(Model):
@@ -173,12 +166,9 @@ class EgyptModel(Model):
             )
             self.schedule.add(agent)  # add agent to scheduler
             self.grid.position_agent(agent)  # place agent in a random empty patch
-
             # data collection
             self.datacollector = DataCollector(
-                # compute gini coefficient - done in datacollector class
                 model_reporters = {'Gini': compute_gini, 'total_population': compute_population})
-                # agent_reporters = {"Wealth": "wealth"} )
 
     def step(self):
         """Advance the model by one tick."""
