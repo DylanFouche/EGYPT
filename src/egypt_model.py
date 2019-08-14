@@ -30,15 +30,17 @@ def compute_population(model):
 class HouseholdAgent(Agent):
     """A household with random initial wealth"""
 
-    def __init__(self, unique_id, starting_size, competency, starting_grain, model):
+    def __init__(self, unique_id, starting_size, competency, ambition, starting_grain, model):
         super().__init__(unique_id, model)
         self.workers = starting_size
         self.competency = competency
+        self.ambition = ambition
         self.grain = starting_grain
 
     def step(self):
         self.farm()
         self.eat()
+        self.population_shift()
 
     def farm(self):
         x, y = self.pos
@@ -54,6 +56,12 @@ class HouseholdAgent(Agent):
                 self.model.schedule.remove(self)
                 self.model.num_agents -= 1
 
+    def population_shift(self):
+        # TODO
+        populate_chance = self.random.uniform(0,1)
+        #criteria for increasing population as per netLogo implementation
+        if (compute_population(self.model) <= (self.model.initial_population * (1 + (self.model.population_growth_rate / 100)) ** self.model.ticks)) and (populate_chance > 0.5):
+            self.workers += 1
 
 class EgyptGrid(SingleGrid):
     """A MESA grid containing the fertility values for patches of land"""
@@ -98,12 +106,16 @@ class EgyptGrid(SingleGrid):
 class EgyptModel(Model):
     """A model that aggregates n agents"""
 
-    def __init__(self, n, w, h, starting_household_size=5, starting_grain=2000, min_competency=0.5):
+    def __init__(self, n, w, h, starting_household_size=5, starting_grain=2000, min_competency=0.5, min_ambition=0.5, population_growth_rate=0.25):
         self.num_agents = n
         self.starting_household_size = starting_household_size
         self.starting_grain = starting_grain
         self.min_competency = min_competency
-        
+        self.min_ambition = min_ambition
+        self.population_growth_rate = population_growth_rate
+        self.initial_population = n * starting_household_size
+        self.ticks = 0
+
         # Create scheduler
         self.schedule = RandomActivation(self)
         # Create grid
@@ -116,6 +128,7 @@ class EgyptModel(Model):
                 unique_id=i,
                 starting_size=starting_household_size,
                 competency=self.random.uniform(min_competency, 1.0),
+                ambition=self.random.uniform(min_ambition, 1.0),
                 starting_grain=starting_grain,
                 model=self
             )
@@ -130,6 +143,7 @@ class EgyptModel(Model):
 
     def step(self):
         """Advance the model by one tick."""
+        self.schedule.step()
+        self.ticks += 1
         # collect this step's data
         self.datacollector.collect(self)
-        self.schedule.step()
