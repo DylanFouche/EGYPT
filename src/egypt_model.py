@@ -115,7 +115,6 @@ class EgyptGrid(SingleGrid):
         self.fertility = np.zeros((height, width))
         self.flood()  # initialise fertility values
 
-
     def flood(self):
         """Simulates nile flood. Assigns new patch fertility values."""
         # Set fertility values according to normal distribution probability density function
@@ -129,10 +128,6 @@ class EgyptGrid(SingleGrid):
         for x in range(self.width):
             # assign fertility value to column x
             self.fertility[:, x] = 17 * (beta * (e ** (-(x - mu) ** 2 / alpha)))
-        from matplotlib import pyplot as plt
-        plt.imshow(self.fertility)
-        plt.show()
-
 
 class EgyptModel(Model):
     """A model that aggregates n agents"""
