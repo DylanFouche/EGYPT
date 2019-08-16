@@ -9,6 +9,9 @@ from math import sqrt, pi, e
 PATCH_MAX_POTENTIAL_YIELD = 2475
 ANNUAL_PER_PERSON_GRAIN_CONSUMPTION = 160
 
+#set knowledge radius to  constant to check
+KNOWLEDGE_RADIUS = 3
+
 # data collector methods
 def compute_gini(model):
     agent_wealths = [agent.grain for agent in model.schedule.agents]
@@ -102,6 +105,42 @@ class HouseholdAgent(Agent):
                     ambition_change *= -1
                 new_ambition = self.ambition + ambition_change
             self.ambition = new_ambition
+
+    def claim_fields(self):
+        """Allows households to decide (function of the field productivity compared to existing fields and ambition) to claim/ not claim fields that fall within their knowledge radii"""
+        claim_chance = random.random() # set random value between 0.1 and 1
+        if ((claim_chance < self.ambition) and (self.workers > fields_owned) or (fields_owned <=1)):
+            current_grain = self.grain
+            best_X_fertility = 0
+            best_Y_fertility = 0
+            best_fertility = -1
+
+            p = self.pos
+            xmin = p[0] - KNOWLEDGE_RADIUS
+            ymin = p[1] - KNOWLEDGE_RADIUS
+            xmax = p[0] + KNOWLEDGE_RADIUS
+            ymax = p[1] + KNOWLEDGE_RADIUS
+
+            # ternary operator used to make sure x and y don't fall outside of grid
+            xmin = xmin < 0 and 0 or xmin # if xmin less than zero, set to 0, else leave as xmin
+            ymin = ymin < 0 and 0 or ymin
+            xmax = (xmax > self.grid.width - 1) and (self.grid.width - 1) or xmax
+            ymax = (ymax > self.grid.height - 1) and (self.grid.height - 1) or ymax
+
+            for x in xmax:
+                for y in ymax:
+                    if self.model.grid[x, y].fertility > best_fertility:
+                        best_X_fertility = x
+                        best_Y_fertility = y
+                        best_fertility = self.model.grid[x, y].fertility
+
+            # here, we know best_X and best_Y = the best field to take in knowledge radius
+            self.model.grid.claim(self, x, y)
+
+
+    def complete_claim(self):
+        """Once household determines whether or not to claim ownership, this methods sets new ownership"""
+
 
 
 class EgyptGrid(SingleGrid):
