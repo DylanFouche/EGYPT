@@ -2,6 +2,7 @@ from mesa import Agent, Model
 from mesa.time import RandomActivation
 from mesa.space import SingleGrid
 from mesa.datacollection import DataCollector
+from random import *
 import numpy as np
 from math import sqrt, pi, e
 
@@ -33,6 +34,7 @@ class FieldAgent(Agent):
         self.household = household
         self.years_fallowed = 0
         self.harvested = False
+        self.grain = randint(10, 100)
 
 class HouseholdAgent(Agent):
     """A household that aggregates n workers"""
@@ -117,7 +119,7 @@ class HouseholdAgent(Agent):
 
     def claim_fields(self):
         """Allows households to decide (function of the field productivity compared to existing fields and ambition) to claim/ not claim fields that fall within their knowledge radii"""
-        claim_chance = random.random() # set random value between 0.1 and 1
+        claim_chance = random() # set random value between 0.1 and 1
         if (claim_chance < self.ambition) and (self.workers > self.fields_owned) or (self.fields_owned <=1):
             current_grain = self.grain
             best_X_fertility = 0
@@ -133,28 +135,26 @@ class HouseholdAgent(Agent):
             # ternary operator used to make sure x and y don't fall outside of grid
             xmin = xmin < 0 and 0 or xmin # if xmin less than zero, set to 0, else leave as xmin
             ymin = ymin < 0 and 0 or ymin
-            xmax = (xmax > self.grid.width - 1) and (self.grid.width - 1) or xmax
-            ymax = (ymax > self.grid.height - 1) and (self.grid.height - 1) or ymax
+            xmax = (xmax > self.model.grid.width - 1) and (self.model.grid.width - 1) or xmax
+            ymax = (ymax > self.model.grid.height - 1) and (self.model.grid.height - 1) or ymax
 
             for x in range(xmin, xmax):
                 for y in range(ymin, ymax):
-                    if self.model.grid.fertility[x][y] > best_fertility and self.model.grid.is_cell_empty(x, y) :
+                    if self.model.grid.fertility[x][y] > best_fertility and self.model.grid.is_cell_empty((x, y,)):
                         best_X_fertility = x
                         best_Y_fertility = y
                         best_fertility = self.model.grid.fertility[x][y]
 
             # here, we know best_X and best_Y = the best field to take in knowledge radius
-            self.complete_claim(self, best_X_fertility, best_Y_fertility)
+            if best_fertility > 0:
+                self.complete_claim(best_X_fertility, best_Y_fertility)
 
 
     def complete_claim(self, x, y):
         """Once household determines whether or not to claim ownership, this methods sets new ownership"""
-    claimed = false
-    this_household = self
-
-    field = FieldAgent(self.unique_id + "_"+ self.fields_owned, self.model, self)
-    self.model.grid.position_agent(field, x, y)
-    self.fields_owned +=1
+        field = FieldAgent("_".join((str(self.unique_id), str(self.fields_owned))), self.model, self)
+        self.model.grid.position_agent(field, x, y)
+        self.fields_owned +=1
 
 
 class EgyptGrid(SingleGrid):
