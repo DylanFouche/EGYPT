@@ -25,6 +25,14 @@ def compute_gini(model):
 def compute_population(model):
     return sum([household.workers for household in model.schedule.agents])
 
+class FieldAgent(Agent):
+    """A field is a claimed piece of land by a household"""
+    def __init__(self, unique_field_id, model, household):
+        super().__init__(unique_field_id,model)
+        self.model = model
+        self.household = household
+        self.years_fallowed = 0
+        self.harvested = False
 
 class HouseholdAgent(Agent):
     """A household that aggregates n workers"""
@@ -36,6 +44,7 @@ class HouseholdAgent(Agent):
         self.ambition = ambition
         self.grain = starting_grain
         self.generation_changeover_countdown = self.random.randint(10,15)
+        self.fields_owned = 0
 
     def step(self):
         self.model.grid.flood()
@@ -109,7 +118,7 @@ class HouseholdAgent(Agent):
     def claim_fields(self):
         """Allows households to decide (function of the field productivity compared to existing fields and ambition) to claim/ not claim fields that fall within their knowledge radii"""
         claim_chance = random.random() # set random value between 0.1 and 1
-        if ((claim_chance < self.ambition) and (self.workers > fields_owned) or (fields_owned <=1)):
+        if (claim_chance < self.ambition) and (self.workers > self.fields_owned) or (self.fields_owned <=1):
             current_grain = self.grain
             best_X_fertility = 0
             best_Y_fertility = 0
@@ -127,20 +136,25 @@ class HouseholdAgent(Agent):
             xmax = (xmax > self.grid.width - 1) and (self.grid.width - 1) or xmax
             ymax = (ymax > self.grid.height - 1) and (self.grid.height - 1) or ymax
 
-            for x in xmax:
-                for y in ymax:
-                    if self.model.grid[x, y].fertility > best_fertility:
+            for x in range(xmin, xmax):
+                for y in range(ymin, ymax):
+                    if self.model.grid.fertility[x][y] > best_fertility and self.model.grid.is_cell_empty(x, y) :
                         best_X_fertility = x
                         best_Y_fertility = y
-                        best_fertility = self.model.grid[x, y].fertility
+                        best_fertility = self.model.grid.fertility[x][y]
 
             # here, we know best_X and best_Y = the best field to take in knowledge radius
-            self.model.grid.claim(self, x, y)
+            self.complete_claim(self, best_X_fertility, best_Y_fertility)
 
 
-    def complete_claim(self):
+    def complete_claim(self, x, y):
         """Once household determines whether or not to claim ownership, this methods sets new ownership"""
+    claimed = false
+    this_household = self
 
+    field = FieldAgent(self.unique_id + "_"+ self.fields_owned, self.model, self)
+    self.model.grid.position_agent(field, x, y)
+    self.fields_owned +=1
 
 
 class EgyptGrid(SingleGrid):
@@ -181,6 +195,7 @@ class EgyptModel(Model):
         self.initial_population = n * starting_household_size
         self.generational_variation = generational_variation
         self.ticks = 0
+        self.agents = []
 
         # Create scheduler
         self.schedule = RandomActivation(self)
@@ -198,6 +213,7 @@ class EgyptModel(Model):
                 starting_grain=starting_grain,
                 model=self
             )
+            self.agents.append(agent)
             self.schedule.add(agent)  # add agent to scheduler
             self.grid.position_agent(agent)  # place agent in a random empty patch
             # data collection
@@ -210,3 +226,11 @@ class EgyptModel(Model):
         self.ticks += 1
         # collect this step's data
         self.datacollector.collect(self)
+        #
+
+        # claim fields every step
+        for a in self.agents:
+            a.claim_fields()
+            #for f in a.field:
+                #if f.harvested:
+                    #f.years_fallow += 1
