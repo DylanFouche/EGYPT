@@ -10,8 +10,6 @@ from math import sqrt, pi, e
 PATCH_MAX_POTENTIAL_YIELD = 2475
 ANNUAL_PER_PERSON_GRAIN_CONSUMPTION = 160
 
-#set knowledge radius to  constant to check
-KNOWLEDGE_RADIUS = 3
 
 # data collector methods
 def compute_gini(model):
@@ -81,7 +79,7 @@ class HouseholdAgent(Agent):
         """ Increase population stochastically in proportion to the population growth rate """
         populate_chance = self.random.uniform(0,1)
         #criteria for increasing population as per netLogo implementation
-        if (compute_population(self.model) <= (self.model.initial_population * (1 + (self.model.population_growth_rate / 100)) ** self.model.ticks)) and (populate_chance > 0.5):
+        if (compute_population(self.model) <= (self.model.initial_population * (1 + (self.model.population_growth_rate_percentage / 100)) ** self.model.ticks)) and (populate_chance > 0.5):
             self.workers += 1
 
     def generation_changeover(self):
@@ -127,10 +125,10 @@ class HouseholdAgent(Agent):
             best_fertility = -1
 
             p = self.pos
-            xmin = p[0] - KNOWLEDGE_RADIUS
-            ymin = p[1] - KNOWLEDGE_RADIUS
-            xmax = p[0] + KNOWLEDGE_RADIUS
-            ymax = p[1] + KNOWLEDGE_RADIUS
+            xmin = p[0] - self.model.knowledge_radius
+            ymin = p[1] - self.model.knowledge_radius
+            xmax = p[0] + self.model.knowledge_radius
+            ymax = p[1] + self.model.knowledge_radius
 
             # ternary operator used to make sure x and y don't fall outside of grid
             xmin = xmin < 0 and 0 or xmin # if xmin less than zero, set to 0, else leave as xmin
@@ -185,15 +183,16 @@ class EgyptGrid(SingleGrid):
 class EgyptModel(Model):
     """A model that aggregates n agents"""
 
-    def __init__(self, n, w, h, starting_household_size=5, starting_grain=2000, min_competency=0.5, min_ambition=0.5, population_growth_rate=0.25, generational_variation=0.5):
+    def __init__(self, n, w, h, starting_household_size=5, starting_grain=2000, min_competency=0.5, min_ambition=0.1, population_growth_rate_percentage=0.1, generational_variation=0.9, knowledge_radius=20):
         self.num_agents = n
         self.starting_household_size = starting_household_size
         self.starting_grain = starting_grain
         self.min_competency = min_competency
         self.min_ambition = min_ambition
-        self.population_growth_rate = population_growth_rate
+        self.population_growth_rate_percentage = population_growth_rate_percentage
         self.initial_population = n * starting_household_size
         self.generational_variation = generational_variation
+        self.knowledge_radius = knowledge_radius
         self.ticks = 0
         self.agents = []
 
