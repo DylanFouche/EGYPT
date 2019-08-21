@@ -140,10 +140,10 @@ class HouseholdAgent(Agent):
 
             for x in range(xmin, xmax):
                 for y in range(ymin, ymax):
-                    if self.model.grid.fertility[x][y] > best_fertility and self.model.grid.is_cell_empty((x, y,)):
+                    if self.model.grid.fertility[y][x] > best_fertility and self.model.grid.is_cell_empty((x, y,)):
                         best_X_fertility = x
                         best_Y_fertility = y
-                        best_fertility = self.model.grid.fertility[x][y]
+                        best_fertility = self.model.grid.fertility[y][x]
 
             # here, we know best_X and best_Y = the best field to take in knowledge radius
             if best_fertility > 0:
