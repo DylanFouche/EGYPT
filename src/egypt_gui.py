@@ -11,7 +11,7 @@ def __agent_portrayal__(agent):
             "Color": "green",
             "Filled": "true",
             "Layer": 2,
-            "r": agent.grain / 4000
+            "r": agent.workers / 5
         }
     else:
         portrayal = {
@@ -47,6 +47,14 @@ def launch(width, height, port=None):
             min_value=100,
             max_value=8000,
             description='Initial Grain Supply of Households'),
+        'min_ambition': UserSettableParameter(
+            'slider',
+            'min_ambition',
+            value=0.1,
+            min_value=0.0,
+            max_value=1.0,
+            step=0.1,
+            description='Minimum Household Ambition'),
         'min_competency': UserSettableParameter(
             'slider',
             'min_competency',
@@ -55,6 +63,29 @@ def launch(width, height, port=None):
             max_value=1.0,
             step=0.1,
             description='Minimum Household Competency'),
+        'generational_variation': UserSettableParameter(
+            'slider',
+            'generational_variation',
+            value=0.9,
+            min_value=0.0,
+            max_value=1.0,
+            step=0.1,
+            description='Generational Variation in Ambition and Competency'),
+        'knowledge_radius': UserSettableParameter(
+            'slider',
+            'knowledge_radius',
+            value=20,
+            min_value=5,
+            max_value=40,
+            description='Household Knowledge Radius'),
+        'population_growth_rate_percentage': UserSettableParameter(
+            'slider',
+            'pop_growth_rate_percentage',
+            value=0.1,
+            min_value=0.0,
+            max_value=0.5,
+            step=0.01,
+            description='Population Growth Rate'),
         'w': width,
         'h': height
     }
