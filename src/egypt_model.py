@@ -10,7 +10,6 @@ from math import sqrt, pi, e
 PATCH_MAX_POTENTIAL_YIELD = 2475
 ANNUAL_PER_PERSON_GRAIN_CONSUMPTION = 160
 
-
 # data collector methods
 def compute_gini(model):
     agent_wealths = [agent.grain for agent in model.schedule.agents]
@@ -53,6 +52,7 @@ class HouseholdAgent(Agent):
         self.grain_loss()
         self.generation_changeover()
         self.population_shift()
+        self.claim_fields()
 
     def farm(self):
         """ Increase grain in proportion to field fertility and worker competency """
@@ -84,6 +84,7 @@ class HouseholdAgent(Agent):
 
     def generation_changeover(self):
         """ Change competency and ambition values every 10-15 years to simulate a new head of household """
+        # Note: this routine is as per the netlogo implementation but is wildly inefficient.
         self.generation_changeover_countdown -= 1
         if self.generation_changeover_countdown <= 0:
             #reset generation changeover countdown
@@ -225,11 +226,3 @@ class EgyptModel(Model):
         self.ticks += 1
         # collect this step's data
         self.datacollector.collect(self)
-        #
-
-        # claim fields every step
-        for a in self.agents:
-            a.claim_fields()
-            #for f in a.field:
-                #if f.harvested:
-                    #f.years_fallow += 1
