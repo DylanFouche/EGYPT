@@ -81,7 +81,7 @@ class HouseholdAgent(Agent):
         #criteria for increasing population as per netLogo implementation
         if (compute_population(self.model) <= (self.model.initial_population * (1 + (self.model.population_growth_rate_percentage / 100)) ** self.model.ticks)) and (populate_chance > 0.5):
             self.workers += 1
-            #simulate workers moving households (I'm not 100% sold on this just yet)
+            #simulate workers moving households
             for settlement in self.model.agents:
                 settlement.workers += 1
 
