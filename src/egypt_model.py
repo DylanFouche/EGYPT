@@ -81,6 +81,9 @@ class HouseholdAgent(Agent):
         #criteria for increasing population as per netLogo implementation
         if (compute_population(self.model) <= (self.model.initial_population * (1 + (self.model.population_growth_rate_percentage / 100)) ** self.model.ticks)) and (populate_chance > 0.5):
             self.workers += 1
+            #simulate workers moving households (I'm not 100% sold on this just yet)
+            for settlement in self.model.agents:
+                settlement.workers += 1
 
     def generation_changeover(self):
         """ Change competency and ambition values every 10-15 years to simulate a new head of household """
@@ -90,31 +93,33 @@ class HouseholdAgent(Agent):
             #reset generation changeover countdown
             self.generation_changeover_countdown = self.random.randint(10,15)
             #generate and set new competency value
-            competency_change = self.random.uniform(0,self.model.generational_variation)
-            decrease_chance = self.random.uniform(0,1)
-            if decrease_chance < 0.5:
-                competency_change *= -1
-            new_competency = self.competency + competency_change
-            while new_competency > 1 or new_competency < self.model.min_competency:
+            if self.model.min_competency < 1:
                 competency_change = self.random.uniform(0,self.model.generational_variation)
                 decrease_chance = self.random.uniform(0,1)
                 if decrease_chance < 0.5:
                     competency_change *= -1
                 new_competency = self.competency + competency_change
-            self.competency = new_competency
+                while new_competency > 1 or new_competency < self.model.min_competency:
+                    competency_change = self.random.uniform(0,self.model.generational_variation)
+                    decrease_chance = self.random.uniform(0,1)
+                    if decrease_chance < 0.5:
+                        competency_change *= -1
+                    new_competency = self.competency + competency_change
+                self.competency = new_competency
             #generate and set new ambition value
-            ambition_change = self.random.uniform(0,self.model.generational_variation)
-            decrease_chance = self.random.uniform(0,1)
-            if decrease_chance < 0.5:
-                ambition_change *= -1
-            new_ambition = self.ambition + ambition_change
-            while new_ambition > 1 or new_ambition < self.model.min_ambition:
+            if self.model.min_ambition < 1:
                 ambition_change = self.random.uniform(0,self.model.generational_variation)
                 decrease_chance = self.random.uniform(0,1)
                 if decrease_chance < 0.5:
                     ambition_change *= -1
                 new_ambition = self.ambition + ambition_change
-            self.ambition = new_ambition
+                while new_ambition > 1 or new_ambition < self.model.min_ambition:
+                    ambition_change = self.random.uniform(0,self.model.generational_variation)
+                    decrease_chance = self.random.uniform(0,1)
+                    if decrease_chance < 0.5:
+                        ambition_change *= -1
+                    new_ambition = self.ambition + ambition_change
+                self.ambition = new_ambition
 
     def claim_fields(self):
         """Allows households to decide (function of the field productivity compared to existing fields and ambition) to claim/ not claim fields that fall within their knowledge radii"""
