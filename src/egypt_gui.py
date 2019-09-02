@@ -41,7 +41,8 @@ def __agent_portrayal__(agent):
 
 
 class EgyptGrid(VisualizationElement):
-    package_includes = ["GridDraw.js", "CanvasModule.js", "InteractionHandler.js"]
+    package_includes = ["GridDraw.js", "InteractionHandler.js"]
+    local_includes = ["src/js/CanvasModule.js"]
     
     def __init__(self, portrayal_method, grid_width, grid_height,
                  canvas_width=500, canvas_height=500):
