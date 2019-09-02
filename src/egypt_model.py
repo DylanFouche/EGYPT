@@ -82,6 +82,7 @@ class SettlementAgent(Agent):
         for household in self.households:
             household.step()
             if household.grain < 0:
+                household.grain = 0
                 household.workers -= 1
                 if household.workers <= 0:
                     # a household will die off iff it has no workers left
