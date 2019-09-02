@@ -7,7 +7,7 @@ from matplotlib.colors import Normalize
 from mesa.visualization.UserParam import UserSettableParameter
 from mesa.visualization.modules import ChartModule
 from mesa.visualization.ModularVisualization import ModularServer, VisualizationElement
-from egypt_model import EgyptModel, HouseholdAgent, FieldAgent
+from egypt_model import EgyptModel, HouseholdAgent, FieldAgent, SettlementAgent
 
 colours = ['red',
            'yellow',
@@ -21,22 +21,24 @@ colours = ['red',
 
 
 def __agent_portrayal__(agent):
-    if type(agent) == HouseholdAgent:
+    if type(agent) == SettlementAgent:
         portrayal = {
             "Shape": "circle",
             "Color": colours[hash(agent.unique_id) % len(colours)],
             "Filled": "true",
             "Layer": 2,
-            "r": agent.workers / 5
+            "r": agent.settlement_population / 15
         }
-    elif type(agent) == FieldAgent and agent.household is not None:
+    elif type(agent) == FieldAgent and agent.settlement is not None:
         portrayal = {
             "Shape": "circle",
-            "Color": colours[hash(agent.household.unique_id) % len(colours)],
+            "Color": colours[hash(agent.settlement.unique_id) % len(colours)],
             "Filled": "true",
             "Layer": 1,
             "r": 0.5
         }
+    else:
+        portrayal = None
     return portrayal
 
 
@@ -104,13 +106,20 @@ class EgyptGrid(VisualizationElement):
 
 def launch(width, height, port=None):
     model_params = {
-        'n': UserSettableParameter(
+        'starting_settlements': UserSettableParameter(
+            'slider',
+            'starting_settlements',
+            value=14,
+            min_value=5,
+            max_value=20,
+            description='Initial Number of Settlements'),
+        'starting_households': UserSettableParameter(
             'slider',
             'starting_households',
             value=7,
             min_value=1,
             max_value=10,
-            description='Initial Number of Households'),
+            description='Initial Number of Households per Settlement'),
         'starting_household_size': UserSettableParameter(
             'slider',
             'starting_household_size',
@@ -190,7 +199,7 @@ def launch(width, height, port=None):
     ))
     visualisation_elements.append(ChartModule(
         [{
-            'Label': 'Mean Household Population',
+            'Label': 'Mean Settlement Population',
             'Color': 'Black'
         }],
         data_collector_name='datacollector'
@@ -204,7 +213,7 @@ def launch(width, height, port=None):
     ))
     visualisation_elements.append(ChartModule(
         [{
-            'Label': 'Mean Household Wealth',
+            'Label': 'Mean Settlement Wealth',
             'Color': 'Black'
         }],
         data_collector_name='datacollector'
