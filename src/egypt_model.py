@@ -18,10 +18,7 @@ def compute_gini(model):
     if N * sum(x) == 0:
         return 0
     B = sum(xi * (N - i) for i, xi in enumerate(x)) / (N * sum(x))
-    gini = (1 + (1 / N) - 2 * B)
-    if gini > 1: return 1
-    if gini < 0: return 0
-    return gini
+    return (1 + (1 / N) - 2 * B)
 
 def compute_total_population(model):
     return sum([settlement.settlement_population for settlement in model.schedule.agents])
@@ -41,6 +38,7 @@ def compute_mean_wealth(model):
 
 class FieldAgent(Agent):
     """A field is a piece of land claimed by a household"""
+
     def __init__(self, unique_field_id, model, settlement):
         super().__init__(unique_field_id,model)
         self.model = model
@@ -57,7 +55,7 @@ class FieldAgent(Agent):
             self.model.grid.remove_agent(self)
 
 class SettlementAgent(Agent):
-    """A settlement that aggregates n households"""
+    """A settlement that aggregates n households and fields."""
 
     def __init__(self, unique_id, num_households, starting_household_size, starting_grain, min_competency, min_ambition, model):
         super().__init__(unique_id, model)
@@ -84,9 +82,9 @@ class SettlementAgent(Agent):
         for household in self.households:
             household.step()
             if household.grain < 0:
-                # a household will die off iff it has no workers left
                 household.workers -= 1
                 if household.workers <= 0:
+                    # a household will die off iff it has no workers left
                     self.households.remove(household)
                     self.num_households-=1
         if self.num_households <= 0:
@@ -113,21 +111,24 @@ class HouseholdAgent(Agent):
         self.settlement = settlement
 
     def step(self):
+        self.claim_fields()
         self.farm()
         self.eat()
         self.grain_loss()
         self.generation_changeover()
         self.population_shift()
-        self.claim_fields()
 
     def farm(self):
         """ Increase grain in proportion to field fertility and worker competency """
         x, y = self.settlement.pos
         self.workers_worked = 0
         for field in self.settlement.fields:
+            field_x, field_y = field.pos
             farm_chance = self.random.uniform(0,1)
             if (self.workers - self.workers_worked >= 2) and (farm_chance > self.ambition * self.competency):
-                self.grain += (PATCH_MAX_POTENTIAL_YIELD * self.model.grid.fertility[y, x] * self.competency) - (0.125 * PATCH_MAX_POTENTIAL_YIELD)
+                self.grain += PATCH_MAX_POTENTIAL_YIELD * self.model.grid.fertility[y, x] * self.competency
+                self.grain -= (0.125 * PATCH_MAX_POTENTIAL_YIELD) #seeding field
+                self.grain -= sqrt(((x-field_x)**2)+((y-field_y)**2)) * self.model.distance_cost #distance cost
                 self.workers_worked += 2
                 field.years_fallowed += 1
 
@@ -136,7 +137,7 @@ class HouseholdAgent(Agent):
         self.grain -= self.grain * 0.1
 
     def eat(self):
-        """ Each worker consumes grain. Workers die if insufficient grain."""
+        """ Each worker consumes grain. """
         self.grain -= self.workers * ANNUAL_PER_PERSON_GRAIN_CONSUMPTION
 
     def population_shift(self):
@@ -226,7 +227,7 @@ class HouseholdAgent(Agent):
 
 
 class EgyptGrid(SingleGrid):
-    """A MESA grid containing the fertility values for patches of land"""
+    """A MESA grid containing the fertility values for patches of land."""
 
     def __init__(self, width, height, model):
         super().__init__(width, height, torus=False)
@@ -253,7 +254,18 @@ class EgyptGrid(SingleGrid):
 class EgyptModel(Model):
     """An agent-based model of Pre-Dynastic Egypt"""
 
-    def __init__(self, w, h, starting_settlements=14, starting_households=7, starting_household_size=5, starting_grain=2000, min_competency=0.5, min_ambition=0.1, population_growth_rate_percentage=0.1, generational_variation=0.9, knowledge_radius=20, fallow_limit=4):
+    def __init__(self, w, h,
+    starting_settlements=14,
+    starting_households=7,
+    starting_household_size=5,
+    starting_grain=2000,
+    min_competency=0.5,
+    min_ambition=0.1,
+    population_growth_rate_percentage=0.1,
+    generational_variation=0.9,
+    knowledge_radius=20,
+    fallow_limit=4,
+    distance_cost=10):
         self.starting_settlements = starting_settlements
         self.starting_households = starting_households
         self.starting_household_size = starting_household_size
@@ -265,9 +277,9 @@ class EgyptModel(Model):
         self.generational_variation = generational_variation
         self.knowledge_radius = knowledge_radius
         self.fallow_limit = fallow_limit
+        self.distance_cost = distance_cost
         self.ticks = 0
         self.num_settlements = 0
-
 
         # Create scheduler
         self.schedule = RandomActivation(self)

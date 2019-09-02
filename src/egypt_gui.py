@@ -173,6 +173,14 @@ def launch(width, height, port=None):
             max_value=0.5,
             step=0.01,
             description='Population Growth Rate'),
+        'distance_cost': UserSettableParameter(
+            'slider',
+            'distance_cost',
+            value=10,
+            min_value=1,
+            max_value=15,
+            step=1,
+            description='Distance Cost'),
         'w': width,
         'h': height
     }
