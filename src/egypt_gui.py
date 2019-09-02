@@ -19,7 +19,6 @@ colours = ['red',
            'orange',
            'brown']
 
-
 def __agent_portrayal__(agent):
     if type(agent) == SettlementAgent:
         portrayal = {
@@ -200,20 +199,6 @@ def launch(width, height, port=None):
     ))
     visualisation_elements.append(ChartModule(
         [{
-            'Label': 'Total Population',
-            'Color': 'Black'
-        }],
-        data_collector_name='datacollector'
-    ))
-    visualisation_elements.append(ChartModule(
-        [{
-            'Label': 'Mean Settlement Population',
-            'Color': 'Black'
-        }],
-        data_collector_name='datacollector'
-    ))
-    visualisation_elements.append(ChartModule(
-        [{
             'Label': 'Total Wealth',
             'Color': 'Black'
         }],
@@ -222,6 +207,20 @@ def launch(width, height, port=None):
     visualisation_elements.append(ChartModule(
         [{
             'Label': 'Mean Settlement Wealth',
+            'Color': 'Black'
+        }],
+        data_collector_name='datacollector'
+    ))
+    visualisation_elements.append(ChartModule(
+        [{
+            'Label': 'Total Population',
+            'Color': 'Black'
+        }],
+        data_collector_name='datacollector'
+    ))
+    visualisation_elements.append(ChartModule(
+        [{
+            'Label': 'Mean Settlement Population',
             'Color': 'Black'
         }],
         data_collector_name='datacollector'

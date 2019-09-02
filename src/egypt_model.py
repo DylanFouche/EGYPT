@@ -44,7 +44,6 @@ class FieldAgent(Agent):
         self.model = model
         self.settlement = settlement
         self.years_fallowed = 0
-        self.harvested = False
         self.grain = randint(10, 100)
 
     def step(self):
