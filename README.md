@@ -16,12 +16,12 @@ export PYTHONPATH=$PYTHONPATH:`pwd`:`pwd`/src
 
 ### 3. Run simulation
 ```bash
-python3 src/simulations/single_simulation.py 100 100 31 30
+python3 src/simulations/gui_simulation.py 31 30
 ```
 
 ## Usage
 
 ```bash 
-python3 src/simulations/single_simulation.py [num_agents] [num_steps] [grid_width] [grid_height]
+python3 src/simulations/gui_simulation.py [grid_width] [grid_height]
 ```
 Note that the default width and height values from the NetLogo source are 31 and 30 respectively.
