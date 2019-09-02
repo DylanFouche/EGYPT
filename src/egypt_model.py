@@ -20,8 +20,17 @@ def compute_gini(model):
     B = sum(xi * (N - i) for i, xi in enumerate(x)) / (N * sum(x))
     return (1 + (1 / N) - 2 * B)
 
-def compute_population(model):
+def compute_total_population(model):
     return sum([household.workers for household in model.schedule.agents])
+
+def compute_mean_population(model):
+    return compute_total_population(model)/model.num_agents
+
+def compute_total_wealth(model):
+    return sum([household.grain for household in model.schedule.agents])
+
+def compute_mean_wealth(model):
+    return compute_total_wealth(model)/model.num_agents
 
 class FieldAgent(Agent):
     """A field is a claimed piece of land by a household"""
@@ -79,7 +88,7 @@ class HouseholdAgent(Agent):
         """ Increase population stochastically in proportion to the population growth rate """
         populate_chance = self.random.uniform(0,1)
         #criteria for increasing population as per netLogo implementation
-        if (compute_population(self.model) <= (self.model.initial_population * (1 + (self.model.population_growth_rate_percentage / 100)) ** self.model.ticks)) and (populate_chance > 0.5):
+        if (compute_total_population(self.model) <= (self.model.initial_population * (1 + (self.model.population_growth_rate_percentage / 100)) ** self.model.ticks)) and (populate_chance > 0.5):
             self.workers += 1
             #simulate workers moving households
             for settlement in self.model.agents:
@@ -223,7 +232,11 @@ class EgyptModel(Model):
             self.grid.position_agent(agent)  # place agent in a random empty patch
             # data collection
             self.datacollector = DataCollector(
-                model_reporters = {'Gini': compute_gini, 'total_population': compute_population})
+                model_reporters = {'Gini': compute_gini,
+                'Total Population': compute_total_population,
+                'Mean Household Population': compute_mean_population,
+                "Total Wealth": compute_total_wealth,
+                "Mean Household Wealth": compute_mean_wealth})
 
     def step(self):
         """Advance the model by one tick."""

@@ -43,7 +43,7 @@ def __agent_portrayal__(agent):
 class EgyptGrid(VisualizationElement):
     package_includes = ["GridDraw.js", "InteractionHandler.js"]
     local_includes = ["src/js/CanvasModule.js"]
-    
+
     def __init__(self, portrayal_method, grid_width, grid_height,
                  canvas_width=500, canvas_height=500):
         """ Instantiate a new EgyptGrid.
@@ -61,22 +61,22 @@ class EgyptGrid(VisualizationElement):
         self.grid_height = grid_height
         self.canvas_width = canvas_width
         self.canvas_height = canvas_height
-        
+
         new_element = ("new CanvasModule({}, {}, {}, {})"
                        .format(self.canvas_width, self.canvas_height,
                                self.grid_width, self.grid_height))
-        
+
         self.js_code = "elements.push(" + new_element + ");"
-    
+
     def render(self, model):
         # create a mapping from fertility values to colours
         colour_map = ScalarMappable(norm=Normalize(vmin=-0.5, vmax=np.max(model.grid.fertility)*1.2), cmap='Greens')
-        
+
         # create list of hex colour strings for each column of the grid
         colours = []
         for x in range(self.grid_width):
             colours.append(to_hex(colour_map.to_rgba(model.grid.fertility[0, x])))
-        
+
         grid_state = defaultdict(list)
         for x in range(model.grid.width):
             for y in range(model.grid.height):
@@ -98,7 +98,7 @@ class EgyptGrid(VisualizationElement):
                         portrayal["x"] = x
                         portrayal["y"] = y
                         grid_state[portrayal["Layer"]].append(portrayal)
-        
+
         return grid_state
 
 
@@ -167,13 +167,13 @@ def launch(width, height, port=None):
         'w': width,
         'h': height
     }
-    
+
     visualisation_elements = []
 
     # grid visualisation
     visualisation_elements.append(EgyptGrid(__agent_portrayal__, width, height, 500, 500))
-    
-    # Gini coefficient graph
+
+    # datacollector graphs
     visualisation_elements.append(ChartModule(
         [{
             'Label': 'Gini',
@@ -181,21 +181,40 @@ def launch(width, height, port=None):
         }],
         data_collector_name='datacollector'
     ))
-
-    # Total population graph
     visualisation_elements.append(ChartModule(
         [{
-            'Label': 'total_population',
+            'Label': 'Total Population',
             'Color': 'Black'
         }],
         data_collector_name='datacollector'
     ))
-    
+    visualisation_elements.append(ChartModule(
+        [{
+            'Label': 'Mean Household Population',
+            'Color': 'Black'
+        }],
+        data_collector_name='datacollector'
+    ))
+    visualisation_elements.append(ChartModule(
+        [{
+            'Label': 'Total Wealth',
+            'Color': 'Black'
+        }],
+        data_collector_name='datacollector'
+    ))
+    visualisation_elements.append(ChartModule(
+        [{
+            'Label': 'Mean Household Wealth',
+            'Color': 'Black'
+        }],
+        data_collector_name='datacollector'
+    ))
+
     server = ModularServer(
         EgyptModel,
         visualisation_elements,
         'Egypt Model',
         model_params
     )
-    
+
     server.launch(port)
