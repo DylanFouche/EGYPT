@@ -21,7 +21,7 @@ python3 src/simulations/gui_simulation.py 31 30
 
 ## Usage
 
-```bash 
+```bash
 python3 src/simulations/gui_simulation.py [grid_width] [grid_height]
 ```
 Note that the default width and height values from the NetLogo source are 31 and 30 respectively.
