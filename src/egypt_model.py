@@ -19,7 +19,7 @@ def compute_gini(model):
     if N * sum(x) == 0:
         return 0
     B = sum(xi * (N - i) for i, xi in enumerate(x)) / (N * sum(x))
-    return (1 + (1 / N) - 2 * B)
+    return 1 + (1 / N) - 2 * B
 
 
 def compute_total_population(model):
