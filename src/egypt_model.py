@@ -233,6 +233,17 @@ class HouseholdAgent(Agent):
         self.fields_owned += 1
         self.settlement.fields.append(field)
 
+    def rent_land(self, x, y):
+        """if global variable 'rent land' is on, ambitious households ae allowed to farm additional plots they don't own, after everyone has finished main farming/harvesting """
+        if (allow_rent = True): #set in gui
+            for x in self.households:
+                self.ambition.sort()
+                total_harvest = 0
+                PATCH_MAX_POTENTIAL_YIELD = 2475
+                household_x = x
+                household_y = y
+                household_competency = competency #need to add?
+                household_colour = colour
 
 class EgyptGrid(SingleGrid):
     """A MESA grid containing the fertility values for patches of land."""
