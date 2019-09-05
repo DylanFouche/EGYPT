@@ -225,11 +225,11 @@ class HouseholdAgent(Agent):
             xmax = p[0] + self.model.knowledge_radius
             ymax = p[1] + self.model.knowledge_radius
             
-            # ternary operator used to make sure x and y don't fall outside of grid
-            xmin = xmin < 0 and 0 or xmin  # if xmin less than zero, set to 0, else leave as xmin
-            ymin = ymin < 0 and 0 or ymin
-            xmax = (xmax > self.model.grid.width - 1) and (self.model.grid.width - 1) or xmax
-            ymax = (ymax > self.model.grid.height - 1) and (self.model.grid.height - 1) or ymax
+            # make sure x and y don't fall outside of grid
+            xmin = max(xmin, 0)  # if xmin less than zero, set to 0, else leave as xmin
+            ymin = max(ymin, 0)
+            xmax = min(xmax, self.model.grid.width)
+            ymax = min(ymax, self.model.grid.height)
             
             for x in range(xmin, xmax):
                 for y in range(ymin, ymax):
