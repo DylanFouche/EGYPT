@@ -92,7 +92,6 @@ class SettlementAgent(Agent):
                 household.workers -= 1
                 if household.workers <= 0:
                     # a household will die off iff it has no workers left
-                    household.release_field_claim()
                     self.households.remove(household)
                     self.num_households -= 1
         if self.num_households <= 0:
@@ -100,9 +99,16 @@ class SettlementAgent(Agent):
             self.model.grid.remove_agent(self)
             self.model.schedule.remove(self)
             self.model.num_settlements -= 1
+            self.release_field_claim()
         # update cumulative wealth and population values
         self.settlement_population = sum([household.workers for household in self.households])
         self.settlement_wealth = sum([household.grain for household in self.households])
+
+    def release_field_claim(self):
+        """Once a settlement dies field claims are released """
+        for field in self.fields:
+            self.model.grid.remove_agent(field)
+
 
 
 class HouseholdAgent(Agent):
@@ -234,11 +240,21 @@ class HouseholdAgent(Agent):
         self.fields_owned += 1
         self.settlement.fields.append(field)
 
-    def release_field_claim(self):
-        """Once a settlement dies field claims are released """
-        for field in self.settlement.fields:
-            self.model.grid.remove_agent(field)
-            self.fields_owned -= 1
+    def rent_land(self, x, y):
+        """if global variable 'rent land' is on, ambitious households ae allowed to farm additional plots they don't own, after everyone has finished main farming/harvesting """
+        #if (allow_rental = True): #set in gui
+            #for x in self.households:
+                #self.ambition.sort()
+                #total_harvest = 0
+                #PATCH_MAX_POTENTIAL_YIELD = 2475
+                #household_x = x
+                #household_y = y
+                #household_competency = self.competency
+                #household_colour = colour #need to add?
+                #for i in range((self.workers-self.workers_worked)/2):
+                #    best_harvest = 0
+                #    best_field = self
+                #   if
 
 
 class EgyptGrid(SingleGrid):
