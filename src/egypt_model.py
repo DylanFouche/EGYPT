@@ -215,7 +215,6 @@ class HouseholdAgent(Agent):
         """Allows households to decide (function of the field productivity compared to existing fields and ambition) to claim/ not claim fields that fall within their knowledge radii"""
         claim_chance = random()  # set random value between 0.1 and 1
         if (claim_chance < self.ambition) and (self.workers > self.fields_owned) or (self.fields_owned <= 1):
-            current_grain = self.grain
             best_X_fertility = 0
             best_Y_fertility = 0
             best_fertility = -1
@@ -239,7 +238,7 @@ class HouseholdAgent(Agent):
                         best_Y_fertility = y
                         best_fertility = self.model.grid.fertility[y][x]
             
-            # here, we know best_X and best_Y = the best field to take in knowledge radius
+            #best_X and best_Y = the best field to take in knowledge radius
             if best_fertility > 0:
                 self.complete_claim(best_X_fertility, best_Y_fertility)
     
@@ -253,10 +252,6 @@ class HouseholdAgent(Agent):
     def rent_land(self):
         """if global variable 'rent land' is on, ambitious households ae allowed to farm additional plots they don't own, after everyone has finished main farming/harvesting """
         total_harvest = 0
-        household_x = self.settlement.pos[0]
-        household_y = self.settlement.pos[1]
-        household_competency = self.competency
-        #household_colour = colour #need to add?
 
         for i in range((self.workers-self.workers_worked) // 2):
             best_harvest = -1
@@ -278,10 +273,6 @@ class HouseholdAgent(Agent):
 
             for x in range(xmin, xmax):
                 for y in range(ymin, ymax):
-                    # see if there is a field at [y][x]
-                    # if there is look at the harvest
-                    # if this harvest > best_harvest
-                    # set bestX=X, bestY=Y, bestharvest=harvest
                     field_cell = self.model.grid[y][x]
                     if field_cell is not None and isinstance(field_cell, FieldAgent) \
                             and field_cell.grain > best_harvest and not field_cell.harvested:
@@ -301,7 +292,6 @@ class HouseholdAgent(Agent):
                     best_field.harvested = True
                     best_field.years_fallowed = 0
                     best_field.grain = 0
-
 
         self.grain += total_harvest
 
