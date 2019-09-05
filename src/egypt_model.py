@@ -9,6 +9,7 @@ from math import sqrt, pi, e
 # constants in NetLogo source
 PATCH_MAX_POTENTIAL_YIELD = 2475
 ANNUAL_PER_PERSON_GRAIN_CONSUMPTION = 160
+LAND_RENTAL_RATE = 20 # number from 0 to 100 used as a percentage
 
 
 # data collector methods
@@ -51,8 +52,10 @@ class FieldAgent(Agent):
         self.settlement = settlement
         self.years_fallowed = 0
         self.grain = randint(10, 100)
+        self.harvested = False
     
     def step(self):
+        self.harvested = False
         if self.years_fallowed == self.model.fallow_limit:
             self.years_fallowed = 0
             self.settlement.fields.remove(self)
@@ -94,6 +97,12 @@ class SettlementAgent(Agent):
                     # a household will die off iff it has no workers left
                     self.households.remove(household)
                     self.num_households -= 1
+
+        # sort by ambition if we need
+        if self.model.allow_rental:
+            for household in self.households:
+                household.rent_land()
+
         if self.num_households <= 0:
             # settlement will be removed iff it has no households left
             self.model.grid.remove_agent(self)
@@ -146,6 +155,7 @@ class HouseholdAgent(Agent):
                 self.grain -= sqrt(
                     ((x - field_x) ** 2) + ((y - field_y) ** 2)) * self.model.distance_cost  # distance cost
                 self.workers_worked += 2
+                field.harvested = True
                 field.years_fallowed += 1
     
     def grain_loss(self):
@@ -240,22 +250,60 @@ class HouseholdAgent(Agent):
         self.fields_owned += 1
         self.settlement.fields.append(field)
 
-    def rent_land(self, x, y):
+    def rent_land(self):
         """if global variable 'rent land' is on, ambitious households ae allowed to farm additional plots they don't own, after everyone has finished main farming/harvesting """
-        #if (allow_rental = True): #set in gui
-            #for x in self.households:
-                #self.ambition.sort()
-                #total_harvest = 0
-                #PATCH_MAX_POTENTIAL_YIELD = 2475
-                #household_x = x
-                #household_y = y
-                #household_competency = self.competency
-                #household_colour = colour #need to add?
-                #for i in range((self.workers-self.workers_worked)/2):
-                #    best_harvest = 0
-                #    best_field = self
-                #   if
+        total_harvest = 0
+        household_x = self.settlement.pos[0]
+        household_y = self.settlement.pos[1]
+        household_competency = self.competency
+        #household_colour = colour #need to add?
 
+        for i in range((self.workers-self.workers_worked) // 2):
+            best_harvest = -1
+            best_X_field = 0
+            best_Y_field = 0
+            best_field = None
+
+            p = self.settlement.pos
+            xmin = p[0] - self.model.knowledge_radius
+            ymin = p[1] - self.model.knowledge_radius
+            xmax = p[0] + self.model.knowledge_radius
+            ymax = p[1] + self.model.knowledge_radius
+
+            # ternary operator used to make sure x and y don't fall outside of grid
+            xmin = xmin < 0 and 0 or xmin  # if xmin less than zero, set to 0, else leave as xmin
+            ymin = ymin < 0 and 0 or ymin
+            xmax = (xmax > self.model.grid.width - 1) and (self.model.grid.width - 1) or xmax
+            ymax = (ymax > self.model.grid.height - 1) and (self.model.grid.height - 1) or ymax
+
+            for x in range(xmin, xmax):
+                for y in range(ymin, ymax):
+                    # see if there is a field at [y][x]
+                    # if there is look at the harvest
+                    # if this harvest > best_harvest
+                    # set bestX=X, bestY=Y, bestharvest=harvest
+                    field_cell = self.model.grid[y][x]
+                    if field_cell is not None and isinstance(field_cell, FieldAgent) \
+                            and field_cell.grain > best_harvest and not field_cell.harvested:
+                        best_X_field = x
+                        best_Y_field = y
+                        best_harvest = field_cell.grain
+                        best_field = field_cell
+
+            if best_field is None:
+                return # no fields to harvest!
+
+            harvest_chance = random()
+            if harvest_chance < (self.competency * self.ambition):
+                extra_grain = best_field.grain*((1-LAND_RENTAL_RATE/100)) #seeding cost was making it go negative
+                if extra_grain > 0 or True:
+                    total_harvest += extra_grain
+                    best_field.harvested = True
+                    best_field.years_fallowed = 0
+                    best_field.grain = 0
+
+
+        self.grain += total_harvest
 
 class EgyptGrid(SingleGrid):
     """A MESA grid containing the fertility values for patches of land."""

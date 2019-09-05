@@ -181,6 +181,11 @@ def launch(width, height, port=None):
             max_value=15,
             step=1,
             description='Distance Cost'),
+        'allow_rental': UserSettableParameter(
+            'checkbox',
+            'allow_rental',
+            value=True,
+            description= 'Allow Land Rental'),
         'w': width,
         'h': height
     }
