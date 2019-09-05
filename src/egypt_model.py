@@ -92,6 +92,7 @@ class SettlementAgent(Agent):
                 household.workers -= 1
                 if household.workers <= 0:
                     # a household will die off iff it has no workers left
+                    household.release_field_claim()
                     self.households.remove(household)
                     self.num_households -= 1
         if self.num_households <= 0:
@@ -233,17 +234,12 @@ class HouseholdAgent(Agent):
         self.fields_owned += 1
         self.settlement.fields.append(field)
 
-    def rent_land(self, x, y):
-        """if global variable 'rent land' is on, ambitious households ae allowed to farm additional plots they don't own, after everyone has finished main farming/harvesting """
-        if (allow_rent = True): #set in gui
-            for x in self.households:
-                self.ambition.sort()
-                total_harvest = 0
-                PATCH_MAX_POTENTIAL_YIELD = 2475
-                household_x = x
-                household_y = y
-                household_competency = competency #need to add?
-                household_colour = colour
+    def release_field_claim(self):
+        """Once a settlement dies field claims are released """
+        for field in self.settlement.fields:
+            self.model.grid.remove_agent(field)
+            self.fields_owned -= 1
+
 
 class EgyptGrid(SingleGrid):
     """A MESA grid containing the fertility values for patches of land."""
@@ -285,7 +281,9 @@ class EgyptModel(Model):
                  generational_variation=0.9,
                  knowledge_radius=20,
                  fallow_limit=4,
-                 distance_cost=10):
+                 distance_cost=10,
+                 allow_rental = True):
+        self.allow_rental = allow_rental
         self.starting_settlements = starting_settlements
         self.starting_households = starting_households
         self.starting_household_size = starting_household_size
