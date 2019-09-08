@@ -111,14 +111,6 @@ class Household():
         self.generation_changeover_countdown = self.settlement.random.randint(10, 15)
         self.fields = []
     
-    def step(self):
-        self.claim_fields()
-        self.farm()
-        self.consume_grain()
-        self.storage_loss()
-        self.generation_changeover()
-        self.population_shift()
-    
     def farm(self):
         """ Increase grain in proportion to field fertility and worker competency """
         x, y = self.settlement.pos
