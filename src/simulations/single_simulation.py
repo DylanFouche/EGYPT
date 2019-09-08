@@ -1,5 +1,4 @@
 import sys
-import egypt_utils
 from egypt_model import EgyptModel
 
 # get command line params
@@ -15,7 +14,3 @@ else:
 model = EgyptModel(grid_width, grid_height)
 for i in range(num_steps):
     model.step()
-#
-# egypt_utils.visualise_model_state(model)
-# egypt_utils.plot_model_variable_graphs(model)
-# egypt_utils.show_graphs()
