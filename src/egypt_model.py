@@ -135,7 +135,6 @@ class Household():
                     ((x - field_x) ** 2) + ((y - field_y) ** 2)) * self.settlement.model.distance_cost  # distance cost
                 self.workers_worked += 2
                 field.harvested = True
-                field.years_fallowed += 1
     
     def storage_loss(self):
         """ Accounts for typical annual storage loss of agricultural product """
