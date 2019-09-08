@@ -165,9 +165,9 @@ def launch(width, height, port=None):
             min_value=5,
             max_value=40,
             description='Household Knowledge Radius'),
-        'population_growth_rate_percentage': UserSettableParameter(
+        'population_growth_rate': UserSettableParameter(
             'slider',
-            'pop_growth_rate_percentage',
+            'pop_growth_rate',
             value=0.1,
             min_value=0.0,
             max_value=0.5,
