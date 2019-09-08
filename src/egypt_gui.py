@@ -27,7 +27,7 @@ def __agent_portrayal__(agent):
             "Color": colours[hash(agent.unique_id) % len(colours)],
             "Filled": "true",
             "Layer": 2,
-            "r": agent.settlement_population / 15
+            "r": agent.workers() / 15
         }
     elif type(agent) == FieldAgent and agent.household is not None:
         portrayal = {
@@ -194,6 +194,14 @@ def launch(width, height, port=None):
             max_value=0.6,
             step=0.05,
             description='Land Rental Rate'),
+        'fallow_limit': UserSettableParameter(
+            'slider',
+            'fallow_limit',
+            value=4,
+            min_value=0,
+            max_value=10,
+            step=1,
+            description='Fallow Limit'),
         'w': width,
         'h': height
     }
