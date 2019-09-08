@@ -7,7 +7,8 @@ from math import sqrt, pi, e
 
 # constants in NetLogo source
 PATCH_MAX_POTENTIAL_YIELD = 2475
-ANNUAL_PER_PERSON_GRAIN_CONSUMPTION = 160
+ANNUAL_PER_PERSON_GRAIN_CONSUMPTION = 160  # 160 kilograms of grain per person annually, after Hassan 1984, 63.
+SEEDING_COST = 300  # cost of seeding a field, assuming 1/8 of maximum potential yield.
 
 
 # data collector methods
@@ -74,11 +75,8 @@ class FieldAgent(Agent):
 class SettlementAgent(Agent):
     """A settlement that aggregates n households and fields."""
     
-    def __init__(self, unique_id, num_households, starting_household_size, starting_grain, min_competency, min_ambition,
-                 model):
+    def __init__(self, unique_id, num_households, starting_household_size, starting_grain, min_competency, min_ambition, model):
         super().__init__(unique_id, model)
-        self.settlement_population = num_households * starting_household_size
-        self.settlement_wealth = num_households * starting_grain
         self.households = []
         for i in range(num_households):
             agent = Household(
@@ -113,19 +111,30 @@ class Household():
     
     def farm(self):
         """ Increase grain in proportion to field fertility and worker competency """
-        x, y = self.settlement.pos
+        household_x, household_y = self.settlement.pos
+        total_harvest = 0
         self.workers_worked = 0
-        for field in self.fields:
-            field_x, field_y = field.pos
+        for i in range(self.workers // 2):
+            best_field = None
+            best_harvest = 0
+            
+            for field in self.fields:
+                field_x, field_y = field.pos
+                
+                this_harvest = ((self.settlement.model.grid.fertility[household_y][household_x] * PATCH_MAX_POTENTIAL_YIELD * self.competency) \
+                                - (sqrt((household_x - field_x) ** 2 + (household_y - field_y) ** 2) * self.settlement.model.distance_cost))
+                if not field.harvested and this_harvest > best_harvest:
+                    best_field = field
+                    best_harvest = this_harvest
+            
             farm_chance = self.settlement.random.uniform(0, 1)
-            if (self.workers - self.workers_worked >= 2) and (farm_chance > self.ambition * self.competency):
-                self.grain += PATCH_MAX_POTENTIAL_YIELD * self.settlement.model.grid.fertility[
-                    field_y, field_x] * self.competency
-                self.grain -= (0.125 * PATCH_MAX_POTENTIAL_YIELD)  # seeding field
-                self.grain -= sqrt(
-                    ((x - field_x) ** 2) + ((y - field_y) ** 2)) * self.settlement.model.distance_cost  # distance cost
-                self.workers_worked += 2
-                field.harvested = True
+            if best_field is not None and (self.grain < (
+                    self.workers * ANNUAL_PER_PERSON_GRAIN_CONSUMPTION) or farm_chance < self.ambition * self.competency):
+                best_field.harvested = True
+                total_harvest += best_harvest - SEEDING_COST
+                self.workers_worked += 2  # each field = 9.52 feddan. Heqanakht papyri suggest 1 worker per 13 feddan. but Islamic period records 1 worker for every 5 or 6 feddan (Lehner 2000, 310), which is what we are following. Since 'worker' here really means household member, and the assumption is that not all household members (e.g. children, people with other duties) are fulltime labourers, so we went for 2 per field.
+        
+        self.grain += total_harvest
     
     def storage_loss(self):
         """ Accounts for typical annual storage loss of agricultural product """
@@ -135,7 +144,7 @@ class Household():
         """ Each worker consumes grain. """
         self.grain -= self.workers * ANNUAL_PER_PERSON_GRAIN_CONSUMPTION
         
-        if self.grain < 0:
+        if self.grain <= 0:
             self.grain = 0
             self.workers -= 1
             if self.workers <= 0:
@@ -148,13 +157,11 @@ class Household():
         """ Increase population stochastically in proportion to the population growth rate """
         populate_chance = self.settlement.random.uniform(0, 1)
         # criteria for increasing population as per netLogo implementation
-        if (compute_total_population(self.settlement.model) <= (self.settlement.model.initial_population * (
-                1 + (
-                self.settlement.model.population_growth_rate_percentage / 100)) ** self.settlement.model.ticks)) and (
-                populate_chance > 0.5):
+        if (compute_total_population(self.settlement.model) <= \
+                (self.settlement.model.starting_population * (1 + self.settlement.model.population_growth_rate) ** self.settlement.model.ticks)) \
+                and (populate_chance > 0.5):
+            
             self.workers += 1
-            # simulate workers moving households
-            self.settlement.settlement_population += 1
     
     def generation_changeover(self):
         """ Change competency and ambition values every 10-15 years to simulate a new head of household """
@@ -162,49 +169,47 @@ class Household():
         self.generation_changeover_countdown -= 1
         if self.generation_changeover_countdown <= 0:
             # reset generation changeover countdown
-            self.generation_changeover_countdown = self.settlement.random.randint(10, 15)
-            # generate and set new competency value
-            if self.settlement.model.min_competency < 1:
-                competency_change = self.settlement.random.uniform(0, self.settlement.model.generational_variation)
-                decrease_chance = self.settlement.random.uniform(0, 1)
-                if decrease_chance < 0.5:
-                    competency_change *= -1
-                new_competency = self.competency + competency_change
-                while new_competency > 1 or new_competency < self.settlement.model.min_competency:
-                    competency_change = self.settlement.random.uniform(0, self.settlement.model.generational_variation)
-                    decrease_chance = self.settlement.random.uniform(0, 1)
-                    if decrease_chance < 0.5:
-                        competency_change *= -1
-                    new_competency = self.competency + competency_change
-                self.competency = new_competency
-            # generate and set new ambition value
-            if self.settlement.model.min_ambition < 1:
+            self.generation_changeover_countdown = self.settlement.random.randint(10, 14)
+            
+            ambition_change = self.settlement.random.uniform(0, self.settlement.model.generational_variation)
+            decrease_chance = self.settlement.random.uniform(0, 1)
+            if decrease_chance < 0.5:
+                ambition_change *= -1
+            new_ambition = self.ambition + ambition_change
+            while new_ambition > 1 or new_ambition < self.settlement.model.min_ambition:
                 ambition_change = self.settlement.random.uniform(0, self.settlement.model.generational_variation)
                 decrease_chance = self.settlement.random.uniform(0, 1)
                 if decrease_chance < 0.5:
                     ambition_change *= -1
                 new_ambition = self.ambition + ambition_change
-                while new_ambition > 1 or new_ambition < self.settlement.model.min_ambition:
-                    ambition_change = self.settlement.random.uniform(0, self.settlement.model.generational_variation)
-                    decrease_chance = self.settlement.random.uniform(0, 1)
-                    if decrease_chance < 0.5:
-                        ambition_change *= -1
-                    new_ambition = self.ambition + ambition_change
-                self.ambition = new_ambition
+            self.ambition = new_ambition
+            
+            competency_change = self.settlement.random.uniform(0, self.settlement.model.generational_variation)
+            decrease_chance = self.settlement.random.uniform(0, 1)
+            if decrease_chance < 0.5:
+                competency_change *= -1
+            new_competency = self.competency + competency_change
+            while new_competency > 1 or new_competency < self.settlement.model.min_competency:
+                competency_change = self.settlement.random.uniform(0, self.settlement.model.generational_variation)
+                decrease_chance = self.settlement.random.uniform(0, 1)
+                if decrease_chance < 0.5:
+                    competency_change *= -1
+                new_competency = self.competency + competency_change
+            self.competency = new_competency
     
     def claim_fields(self):
         """Allows households to decide (function of the field productivity compared to existing fields and ambition) to claim/ not claim fields that fall within their knowledge radii"""
-        claim_chance = self.settlement.random.random()  # set random value between 0 and 1
+        claim_chance = self.settlement.random.uniform(0, 1)  # set random value between 0 and 1
         if (claim_chance < self.ambition) and (self.workers > len(self.fields)) or (len(self.fields) <= 1):
             best_X_fertility = 0
             best_Y_fertility = 0
             best_fertility = -1
             
-            p = self.settlement.pos
-            xmin = p[0] - self.settlement.model.knowledge_radius
-            ymin = p[1] - self.settlement.model.knowledge_radius
-            xmax = p[0] + self.settlement.model.knowledge_radius
-            ymax = p[1] + self.settlement.model.knowledge_radius
+            household_x, household_y = self.settlement.pos
+            xmin = household_x - self.settlement.model.knowledge_radius
+            ymin = household_y - self.settlement.model.knowledge_radius
+            xmax = household_x + self.settlement.model.knowledge_radius
+            ymax = household_y + self.settlement.model.knowledge_radius
             
             # make sure x and y don't fall outside of grid
             xmin = max(xmin, 0)  # if xmin less than zero, set to 0, else leave as xmin
@@ -212,14 +217,16 @@ class Household():
             xmax = min(xmax, self.settlement.model.grid.width)
             ymax = min(ymax, self.settlement.model.grid.height)
             
-            for x in range(xmin, xmax):
-                for y in range(ymin, ymax):
-                    if (x - p[0]) ** 2 + (y - p[1]) ** 2 <= self.settlement.model.knowledge_radius ** 2:
-                        if self.settlement.model.grid.fertility[y][
-                            x] > best_fertility and self.settlement.model.grid.is_cell_empty((x, y,)):
-                            best_X_fertility = x
-                            best_Y_fertility = y
-                            best_fertility = self.settlement.model.grid.fertility[y][x]
+            for field_x in range(xmin, xmax):
+                for field_y in range(ymin, ymax):
+                    if (field_x - household_x) ** 2 + (field_y - household_y) ** 2 <= self.settlement.model.knowledge_radius ** 2:
+                        
+                        if self.settlement.model.grid.fertility[field_y][field_x] > best_fertility and \
+                                self.settlement.model.grid.is_cell_empty((field_x, field_y,)):
+                            
+                            best_X_fertility = field_x
+                            best_Y_fertility = field_y
+                            best_fertility = self.settlement.model.grid.fertility[field_y][field_x]
             
             # best_X and best_Y = the best field to take in knowledge radius
             if best_fertility > 0:
@@ -227,7 +234,7 @@ class Household():
     
     def complete_claim(self, x, y):
         """Once household determines whether or not to claim ownership, this methods sets new ownership"""
-        field = FieldAgent(str(self.settlement.random.random()), self.settlement.model, self)
+        field = FieldAgent(str(self.settlement.random.uniform(0, 1)), self.settlement.model, self)
         self.settlement.model.grid.position_agent(field, x, y)
         self.fields.append(field)
         self.settlement.model.fields.append(field)
@@ -241,18 +248,15 @@ class Household():
     def rent_land(self):
         """if global variable 'rent land' is on, ambitious households ae allowed to farm additional plots they don't own, after everyone has finished main farming/harvesting """
         total_harvest = 0
-        
         for i in range((self.workers - self.workers_worked) // 2):
-            best_harvest = -1
-            best_X_field = 0
-            best_Y_field = 0
+            best_harvest = 0
             best_field = None
             
-            p = self.settlement.pos
-            xmin = p[0] - self.settlement.model.knowledge_radius
-            ymin = p[1] - self.settlement.model.knowledge_radius
-            xmax = p[0] + self.settlement.model.knowledge_radius
-            ymax = p[1] + self.settlement.model.knowledge_radius
+            household_x, household_y = self.settlement.pos
+            xmin = household_x - self.settlement.model.knowledge_radius
+            ymin = household_y - self.settlement.model.knowledge_radius
+            xmax = household_x + self.settlement.model.knowledge_radius
+            ymax = household_y + self.settlement.model.knowledge_radius
             
             # make sure x and y don't fall outside of grid
             xmin = max(xmin, 0)  # if xmin less than zero, set to 0, else leave as xmin
@@ -260,29 +264,25 @@ class Household():
             xmax = min(xmax, self.settlement.model.grid.width)
             ymax = min(ymax, self.settlement.model.grid.height)
             
-            for x in range(xmin, xmax):
-                for y in range(ymin, ymax):
-                    if (x - p[0]) ** 2 + (y - p[1]) ** 2 <= self.settlement.model.knowledge_radius ** 2:
-                        field_cell = self.settlement.model.grid.fertility[y][x]
-                        if field_cell is not None and isinstance(field_cell, FieldAgent) \
-                                and field_cell.grain > best_harvest and not field_cell.harvested:
-                            best_X_field = x
-                            best_Y_field = y
-                            best_harvest = field_cell.grain
-                            best_field = field_cell
+            for field_x in range(xmin, xmax):
+                for field_y in range(ymin, ymax):
+                    if (field_x - household_x) ** 2 + (field_y - household_y) ** 2 <= self.settlement.model.knowledge_radius ** 2:
+                        field_cell = self.settlement.model.grid.grid[field_x][field_y]
+                        if isinstance(field_cell, FieldAgent):
+                            
+                            this_harvest = ((self.settlement.model.grid.fertility[field_y][field_x] * PATCH_MAX_POTENTIAL_YIELD * self.competency) - \
+                                            sqrt((field_x - household_x) ** 2 + (field_y - household_y) ** 2) * self.settlement.model.distance_cost)
+                            
+                            if not field_cell.harvested and this_harvest >= best_harvest:
+                                best_harvest = this_harvest
+                                best_field = field_cell
             
-            if best_field is None:
-                return  # no fields to harvest!
-            
-            harvest_chance = self.random()
-            if harvest_chance < (self.competency * self.ambition):
-                extra_grain = best_field.grain * (
-                    (1 - self.settlement.model.land_rental_rate)-300)  # seeding cost was making it go negative
-                if extra_grain > 0 or True:
-                    total_harvest += extra_grain
-                    best_field.harvested = True
-                    best_field.years_fallowed = 0
-                    best_field.grain = 0
+            harvest_chance = self.settlement.random.uniform(0, 1)
+            if best_field is not None and best_field not in self.fields and harvest_chance < (self.competency * self.ambition):
+                best_field.harvested = True
+                total_harvest += ((best_harvest * (1 - self.settlement.model.land_rental_rate)) - SEEDING_COST)  # renter bears seeding cost
+                
+                best_field.household.grain += best_harvest * self.settlement.model.land_rental_rate  # seller makes a profit
         
         self.grain += total_harvest
 
@@ -323,7 +323,7 @@ class EgyptModel(Model):
                  starting_grain=2000,
                  min_competency=0.5,
                  min_ambition=0.1,
-                 population_growth_rate_percentage=0.1,
+                 population_growth_rate=0.1,
                  generational_variation=0.9,
                  knowledge_radius=20,
                  fallow_limit=4,
@@ -338,8 +338,8 @@ class EgyptModel(Model):
         self.starting_grain = starting_grain
         self.min_competency = min_competency
         self.min_ambition = min_ambition
-        self.population_growth_rate_percentage = population_growth_rate_percentage
-        self.initial_population = starting_settlements * starting_households * starting_household_size
+        self.population_growth_rate = population_growth_rate
+        self.starting_population = starting_settlements * starting_households * starting_household_size
         self.generational_variation = generational_variation
         self.knowledge_radius = knowledge_radius
         self.fallow_limit = fallow_limit
