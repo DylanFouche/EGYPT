@@ -7,7 +7,7 @@ from matplotlib.colors import Normalize
 from mesa.visualization.UserParam import UserSettableParameter
 from mesa.visualization.modules import ChartModule
 from mesa.visualization.ModularVisualization import ModularServer, VisualizationElement
-from egypt_model import EgyptModel, HouseholdAgent, FieldAgent, SettlementAgent
+from egypt_model import EgyptModel, Household, FieldAgent, SettlementAgent
 
 colours = ['red',
            'yellow',
@@ -29,10 +29,10 @@ def __agent_portrayal__(agent):
             "Layer": 2,
             "r": agent.settlement_population / 15
         }
-    elif type(agent) == FieldAgent and agent.settlement is not None:
+    elif type(agent) == FieldAgent and agent.household is not None:
         portrayal = {
             "Shape": "circle",
-            "Color": colours[hash(agent.settlement.unique_id) % len(colours)],
+            "Color": colours[hash(agent.household.settlement.unique_id) % len(colours)],
             "Filled": "true",
             "Layer": 1,
             "r": 0.5
