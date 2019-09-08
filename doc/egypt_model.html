@@ -1,0 +1,405 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<html><head><title>Python: module egypt_model</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+</head><body bgcolor="#f0f0f8">
+
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="heading">
+<tr bgcolor="#7799ee">
+<td valign=bottom>&nbsp;<br>
+<font color="#ffffff" face="helvetica, arial">&nbsp;<br><big><big><strong>egypt_model</strong></big></big></font></td
+><td align=right valign=bottom
+><font color="#ffffff" face="helvetica, arial"><a href=".">index</a><br><a href="file:/Users/dylanfouche/Documents/CS3/Capstone/EGYPT/src/egypt_model.py">/Users/dylanfouche/Documents/CS3/Capstone/EGYPT/src/egypt_model.py</a></font></td></tr></table>
+    <p></p>
+<p>
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
+<tr bgcolor="#aa55cc">
+<td colspan=3 valign=bottom>&nbsp;<br>
+<font color="#ffffff" face="helvetica, arial"><big><strong>Modules</strong></big></font></td></tr>
+    
+<tr><td bgcolor="#aa55cc"><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</tt></td><td>&nbsp;</td>
+<td width="100%"><table width="100%" summary="list"><tr><td width="25%" valign=top><a href="numpy.html">numpy</a><br>
+</td><td width="25%" valign=top></td><td width="25%" valign=top></td><td width="25%" valign=top></td></tr></table></td></tr></table><p>
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
+<tr bgcolor="#ee77aa">
+<td colspan=3 valign=bottom>&nbsp;<br>
+<font color="#ffffff" face="helvetica, arial"><big><strong>Classes</strong></big></font></td></tr>
+    
+<tr><td bgcolor="#ee77aa"><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</tt></td><td>&nbsp;</td>
+<td width="100%"><dl>
+<dt><font face="helvetica, arial"><a href="builtins.html#object">builtins.object</a>
+</font></dt><dd>
+<dl>
+<dt><font face="helvetica, arial"><a href="egypt_model.html#Household">Household</a>
+</font></dt></dl>
+</dd>
+<dt><font face="helvetica, arial"><a href="mesa.agent.html#Agent">mesa.agent.Agent</a>(<a href="builtins.html#object">builtins.object</a>)
+</font></dt><dd>
+<dl>
+<dt><font face="helvetica, arial"><a href="egypt_model.html#FieldAgent">FieldAgent</a>
+</font></dt><dt><font face="helvetica, arial"><a href="egypt_model.html#SettlementAgent">SettlementAgent</a>
+</font></dt></dl>
+</dd>
+<dt><font face="helvetica, arial"><a href="mesa.model.html#Model">mesa.model.Model</a>(<a href="builtins.html#object">builtins.object</a>)
+</font></dt><dd>
+<dl>
+<dt><font face="helvetica, arial"><a href="egypt_model.html#EgyptModel">EgyptModel</a>
+</font></dt></dl>
+</dd>
+<dt><font face="helvetica, arial"><a href="mesa.space.html#SingleGrid">mesa.space.SingleGrid</a>(<a href="mesa.space.html#Grid">mesa.space.Grid</a>)
+</font></dt><dd>
+<dl>
+<dt><font face="helvetica, arial"><a href="egypt_model.html#EgyptGrid">EgyptGrid</a>
+</font></dt></dl>
+</dd>
+</dl>
+ <p>
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
+<tr bgcolor="#ffc8d8">
+<td colspan=3 valign=bottom>&nbsp;<br>
+<font color="#000000" face="helvetica, arial"><a name="EgyptGrid">class <strong>EgyptGrid</strong></a>(<a href="mesa.space.html#SingleGrid">mesa.space.SingleGrid</a>)</font></td></tr>
+    
+<tr bgcolor="#ffc8d8"><td rowspan=2><tt>&nbsp;&nbsp;&nbsp;</tt></td>
+<td colspan=2><tt>A&nbsp;MESA&nbsp;grid&nbsp;containing&nbsp;the&nbsp;fertility&nbsp;values&nbsp;for&nbsp;patches&nbsp;of&nbsp;land.<br>&nbsp;</tt></td></tr>
+<tr><td>&nbsp;</td>
+<td width="100%"><dl><dt>Method resolution order:</dt>
+<dd><a href="egypt_model.html#EgyptGrid">EgyptGrid</a></dd>
+<dd><a href="mesa.space.html#SingleGrid">mesa.space.SingleGrid</a></dd>
+<dd><a href="mesa.space.html#Grid">mesa.space.Grid</a></dd>
+<dd><a href="builtins.html#object">builtins.object</a></dd>
+</dl>
+<hr>
+Methods defined here:<br>
+<dl><dt><a name="EgyptGrid-__init__"><strong>__init__</strong></a>(self, width, height, model)</dt><dd><tt>Create&nbsp;a&nbsp;new&nbsp;single-item&nbsp;grid.<br>
+&nbsp;<br>
+Args:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;width,&nbsp;height:&nbsp;The&nbsp;width&nbsp;and&nbsp;width&nbsp;of&nbsp;the&nbsp;grid<br>
+&nbsp;&nbsp;&nbsp;&nbsp;torus:&nbsp;Boolean&nbsp;whether&nbsp;the&nbsp;grid&nbsp;wraps&nbsp;or&nbsp;not.</tt></dd></dl>
+
+<dl><dt><a name="EgyptGrid-flood"><strong>flood</strong></a>(self)</dt><dd><tt>Simulates&nbsp;nile&nbsp;flood.&nbsp;Assigns&nbsp;new&nbsp;patch&nbsp;fertility&nbsp;values.</tt></dd></dl>
+
+<hr>
+Methods inherited from <a href="mesa.space.html#SingleGrid">mesa.space.SingleGrid</a>:<br>
+<dl><dt><a name="EgyptGrid-position_agent"><strong>position_agent</strong></a>(self, agent, x='random', y='random')</dt><dd><tt>Position&nbsp;an&nbsp;agent&nbsp;on&nbsp;the&nbsp;grid.<br>
+This&nbsp;is&nbsp;used&nbsp;when&nbsp;first&nbsp;placing&nbsp;agents!&nbsp;Use&nbsp;'<a href="#EgyptGrid-move_to_empty">move_to_empty</a>()'<br>
+when&nbsp;you&nbsp;want&nbsp;agents&nbsp;to&nbsp;jump&nbsp;to&nbsp;an&nbsp;empty&nbsp;cell.<br>
+Use&nbsp;'swap_pos()'&nbsp;to&nbsp;swap&nbsp;agents&nbsp;positions.<br>
+If&nbsp;x&nbsp;or&nbsp;y&nbsp;are&nbsp;positive,&nbsp;they&nbsp;are&nbsp;used,&nbsp;but&nbsp;if&nbsp;"random",<br>
+we&nbsp;get&nbsp;a&nbsp;random&nbsp;position.<br>
+Ensure&nbsp;this&nbsp;random&nbsp;position&nbsp;is&nbsp;not&nbsp;occupied&nbsp;(in&nbsp;Grid).</tt></dd></dl>
+
+<hr>
+Data and other attributes inherited from <a href="mesa.space.html#SingleGrid">mesa.space.SingleGrid</a>:<br>
+<dl><dt><strong>empties</strong> = []</dl>
+
+<hr>
+Methods inherited from <a href="mesa.space.html#Grid">mesa.space.Grid</a>:<br>
+<dl><dt><a name="EgyptGrid-__getitem__"><strong>__getitem__</strong></a>(self, index)</dt></dl>
+
+<dl><dt><a name="EgyptGrid-__iter__"><strong>__iter__</strong></a>(self)</dt></dl>
+
+<dl><dt><a name="EgyptGrid-coord_iter"><strong>coord_iter</strong></a>(self)</dt><dd><tt>An&nbsp;iterator&nbsp;that&nbsp;returns&nbsp;coordinates&nbsp;as&nbsp;well&nbsp;as&nbsp;cell&nbsp;contents.</tt></dd></dl>
+
+<dl><dt><a name="EgyptGrid-exists_empty_cells"><strong>exists_empty_cells</strong></a>(self)</dt><dd><tt>Return&nbsp;True&nbsp;if&nbsp;any&nbsp;cells&nbsp;empty&nbsp;else&nbsp;False.</tt></dd></dl>
+
+<dl><dt><a name="EgyptGrid-find_empty"><strong>find_empty</strong></a>(self)</dt><dd><tt>Pick&nbsp;a&nbsp;random&nbsp;empty&nbsp;cell.</tt></dd></dl>
+
+<dl><dt><a name="EgyptGrid-get_cell_list_contents"><strong>get_cell_list_contents</strong></a> = wrapper(*args)</dt></dl>
+
+<dl><dt><a name="EgyptGrid-get_neighborhood"><strong>get_neighborhood</strong></a>(self, pos, moore, include_center=False, radius=1)</dt><dd><tt>Return&nbsp;a&nbsp;list&nbsp;of&nbsp;cells&nbsp;that&nbsp;are&nbsp;in&nbsp;the&nbsp;neighborhood&nbsp;of&nbsp;a<br>
+certain&nbsp;point.<br>
+&nbsp;<br>
+Args:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;pos:&nbsp;Coordinate&nbsp;tuple&nbsp;for&nbsp;the&nbsp;neighborhood&nbsp;to&nbsp;get.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;moore:&nbsp;If&nbsp;True,&nbsp;return&nbsp;Moore&nbsp;neighborhood<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(including&nbsp;diagonals)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;If&nbsp;False,&nbsp;return&nbsp;Von&nbsp;Neumann&nbsp;neighborhood<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(exclude&nbsp;diagonals)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;include_center:&nbsp;If&nbsp;True,&nbsp;return&nbsp;the&nbsp;(x,&nbsp;y)&nbsp;cell&nbsp;as&nbsp;well.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Otherwise,&nbsp;return&nbsp;surrounding&nbsp;cells&nbsp;only.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;radius:&nbsp;radius,&nbsp;in&nbsp;cells,&nbsp;of&nbsp;neighborhood&nbsp;to&nbsp;get.<br>
+&nbsp;<br>
+Returns:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;A&nbsp;list&nbsp;of&nbsp;coordinate&nbsp;tuples&nbsp;representing&nbsp;the&nbsp;neighborhood;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;With&nbsp;radius&nbsp;1,&nbsp;at&nbsp;most&nbsp;9&nbsp;if&nbsp;Moore,&nbsp;5&nbsp;if&nbsp;Von&nbsp;Neumann&nbsp;(8&nbsp;and&nbsp;4<br>
+&nbsp;&nbsp;&nbsp;&nbsp;if&nbsp;not&nbsp;including&nbsp;the&nbsp;center).</tt></dd></dl>
+
+<dl><dt><a name="EgyptGrid-get_neighbors"><strong>get_neighbors</strong></a>(self, pos, moore, include_center=False, radius=1)</dt><dd><tt>Return&nbsp;a&nbsp;list&nbsp;of&nbsp;neighbors&nbsp;to&nbsp;a&nbsp;certain&nbsp;point.<br>
+&nbsp;<br>
+Args:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;pos:&nbsp;Coordinate&nbsp;tuple&nbsp;for&nbsp;the&nbsp;neighborhood&nbsp;to&nbsp;get.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;moore:&nbsp;If&nbsp;True,&nbsp;return&nbsp;Moore&nbsp;neighborhood<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(including&nbsp;diagonals)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;If&nbsp;False,&nbsp;return&nbsp;Von&nbsp;Neumann&nbsp;neighborhood<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(exclude&nbsp;diagonals)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;include_center:&nbsp;If&nbsp;True,&nbsp;return&nbsp;the&nbsp;(x,&nbsp;y)&nbsp;cell&nbsp;as&nbsp;well.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Otherwise,<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;return&nbsp;surrounding&nbsp;cells&nbsp;only.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;radius:&nbsp;radius,&nbsp;in&nbsp;cells,&nbsp;of&nbsp;neighborhood&nbsp;to&nbsp;get.<br>
+&nbsp;<br>
+Returns:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;A&nbsp;list&nbsp;of&nbsp;non-None&nbsp;objects&nbsp;in&nbsp;the&nbsp;given&nbsp;neighborhood;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;at&nbsp;most&nbsp;9&nbsp;if&nbsp;Moore,&nbsp;5&nbsp;if&nbsp;Von-Neumann<br>
+&nbsp;&nbsp;&nbsp;&nbsp;(8&nbsp;and&nbsp;4&nbsp;if&nbsp;not&nbsp;including&nbsp;the&nbsp;center).</tt></dd></dl>
+
+<dl><dt><a name="EgyptGrid-is_cell_empty"><strong>is_cell_empty</strong></a>(self, pos)</dt><dd><tt>Returns&nbsp;a&nbsp;bool&nbsp;of&nbsp;the&nbsp;contents&nbsp;of&nbsp;a&nbsp;cell.</tt></dd></dl>
+
+<dl><dt><a name="EgyptGrid-iter_cell_list_contents"><strong>iter_cell_list_contents</strong></a> = wrapper(*args)</dt></dl>
+
+<dl><dt><a name="EgyptGrid-iter_neighborhood"><strong>iter_neighborhood</strong></a>(self, pos, moore, include_center=False, radius=1)</dt><dd><tt>Return&nbsp;an&nbsp;iterator&nbsp;over&nbsp;cell&nbsp;coordinates&nbsp;that&nbsp;are&nbsp;in&nbsp;the<br>
+neighborhood&nbsp;of&nbsp;a&nbsp;certain&nbsp;point.<br>
+&nbsp;<br>
+Args:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;pos:&nbsp;Coordinate&nbsp;tuple&nbsp;for&nbsp;the&nbsp;neighborhood&nbsp;to&nbsp;get.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;moore:&nbsp;If&nbsp;True,&nbsp;return&nbsp;Moore&nbsp;neighborhood<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(including&nbsp;diagonals)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;If&nbsp;False,&nbsp;return&nbsp;Von&nbsp;Neumann&nbsp;neighborhood<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(exclude&nbsp;diagonals)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;include_center:&nbsp;If&nbsp;True,&nbsp;return&nbsp;the&nbsp;(x,&nbsp;y)&nbsp;cell&nbsp;as&nbsp;well.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Otherwise,&nbsp;return&nbsp;surrounding&nbsp;cells&nbsp;only.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;radius:&nbsp;radius,&nbsp;in&nbsp;cells,&nbsp;of&nbsp;neighborhood&nbsp;to&nbsp;get.<br>
+&nbsp;<br>
+Returns:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;A&nbsp;list&nbsp;of&nbsp;coordinate&nbsp;tuples&nbsp;representing&nbsp;the&nbsp;neighborhood.&nbsp;For<br>
+&nbsp;&nbsp;&nbsp;&nbsp;example&nbsp;with&nbsp;radius&nbsp;1,&nbsp;it&nbsp;will&nbsp;return&nbsp;list&nbsp;with&nbsp;number&nbsp;of&nbsp;elements<br>
+&nbsp;&nbsp;&nbsp;&nbsp;equals&nbsp;at&nbsp;most&nbsp;9&nbsp;(8)&nbsp;if&nbsp;Moore,&nbsp;5&nbsp;(4)&nbsp;if&nbsp;Von&nbsp;Neumann&nbsp;(if&nbsp;not<br>
+&nbsp;&nbsp;&nbsp;&nbsp;including&nbsp;the&nbsp;center).</tt></dd></dl>
+
+<dl><dt><a name="EgyptGrid-iter_neighbors"><strong>iter_neighbors</strong></a>(self, pos, moore, include_center=False, radius=1)</dt><dd><tt>Return&nbsp;an&nbsp;iterator&nbsp;over&nbsp;neighbors&nbsp;to&nbsp;a&nbsp;certain&nbsp;point.<br>
+&nbsp;<br>
+Args:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;pos:&nbsp;Coordinates&nbsp;for&nbsp;the&nbsp;neighborhood&nbsp;to&nbsp;get.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;moore:&nbsp;If&nbsp;True,&nbsp;return&nbsp;Moore&nbsp;neighborhood<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(including&nbsp;diagonals)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;If&nbsp;False,&nbsp;return&nbsp;Von&nbsp;Neumann&nbsp;neighborhood<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(exclude&nbsp;diagonals)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;include_center:&nbsp;If&nbsp;True,&nbsp;return&nbsp;the&nbsp;(x,&nbsp;y)&nbsp;cell&nbsp;as&nbsp;well.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Otherwise,<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;return&nbsp;surrounding&nbsp;cells&nbsp;only.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;radius:&nbsp;radius,&nbsp;in&nbsp;cells,&nbsp;of&nbsp;neighborhood&nbsp;to&nbsp;get.<br>
+&nbsp;<br>
+Returns:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;An&nbsp;iterator&nbsp;of&nbsp;non-None&nbsp;objects&nbsp;in&nbsp;the&nbsp;given&nbsp;neighborhood;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;at&nbsp;most&nbsp;9&nbsp;if&nbsp;Moore,&nbsp;5&nbsp;if&nbsp;Von-Neumann<br>
+&nbsp;&nbsp;&nbsp;&nbsp;(8&nbsp;and&nbsp;4&nbsp;if&nbsp;not&nbsp;including&nbsp;the&nbsp;center).</tt></dd></dl>
+
+<dl><dt><a name="EgyptGrid-move_agent"><strong>move_agent</strong></a>(self, agent, pos)</dt><dd><tt>Move&nbsp;an&nbsp;agent&nbsp;from&nbsp;its&nbsp;current&nbsp;position&nbsp;to&nbsp;a&nbsp;new&nbsp;position.<br>
+&nbsp;<br>
+Args:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;agent:&nbsp;<a href="mesa.agent.html#Agent">Agent</a>&nbsp;<a href="builtins.html#object">object</a>&nbsp;to&nbsp;move.&nbsp;Assumed&nbsp;to&nbsp;have&nbsp;its&nbsp;current&nbsp;location<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;stored&nbsp;in&nbsp;a&nbsp;'pos'&nbsp;tuple.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;pos:&nbsp;Tuple&nbsp;of&nbsp;new&nbsp;position&nbsp;to&nbsp;move&nbsp;the&nbsp;agent&nbsp;to.</tt></dd></dl>
+
+<dl><dt><a name="EgyptGrid-move_to_empty"><strong>move_to_empty</strong></a>(self, agent)</dt><dd><tt>Moves&nbsp;agent&nbsp;to&nbsp;a&nbsp;random&nbsp;empty&nbsp;cell,&nbsp;vacating&nbsp;agent's&nbsp;old&nbsp;cell.</tt></dd></dl>
+
+<dl><dt><a name="EgyptGrid-neighbor_iter"><strong>neighbor_iter</strong></a>(self, pos, moore=True)</dt><dd><tt>Iterate&nbsp;over&nbsp;position&nbsp;neighbors.<br>
+&nbsp;<br>
+Args:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;pos:&nbsp;(x,y)&nbsp;coords&nbsp;tuple&nbsp;for&nbsp;the&nbsp;position&nbsp;to&nbsp;get&nbsp;the&nbsp;neighbors&nbsp;of.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;moore:&nbsp;Boolean&nbsp;for&nbsp;whether&nbsp;to&nbsp;use&nbsp;Moore&nbsp;neighborhood&nbsp;(including<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;diagonals)&nbsp;or&nbsp;Von&nbsp;Neumann&nbsp;(only&nbsp;up/down/left/right).</tt></dd></dl>
+
+<dl><dt><a name="EgyptGrid-out_of_bounds"><strong>out_of_bounds</strong></a>(self, pos)</dt><dd><tt>Determines&nbsp;whether&nbsp;position&nbsp;is&nbsp;off&nbsp;the&nbsp;grid,&nbsp;returns&nbsp;the&nbsp;out&nbsp;of<br>
+bounds&nbsp;coordinate.</tt></dd></dl>
+
+<dl><dt><a name="EgyptGrid-place_agent"><strong>place_agent</strong></a>(self, agent, pos)</dt><dd><tt>Position&nbsp;an&nbsp;agent&nbsp;on&nbsp;the&nbsp;grid,&nbsp;and&nbsp;set&nbsp;its&nbsp;pos&nbsp;variable.</tt></dd></dl>
+
+<dl><dt><a name="EgyptGrid-remove_agent"><strong>remove_agent</strong></a>(self, agent)</dt><dd><tt>Remove&nbsp;the&nbsp;agent&nbsp;from&nbsp;the&nbsp;grid&nbsp;and&nbsp;set&nbsp;its&nbsp;pos&nbsp;variable&nbsp;to&nbsp;None.</tt></dd></dl>
+
+<dl><dt><a name="EgyptGrid-torus_adj"><strong>torus_adj</strong></a>(self, pos)</dt><dd><tt>Convert&nbsp;coordinate,&nbsp;handling&nbsp;torus&nbsp;looping.</tt></dd></dl>
+
+<hr>
+Static methods inherited from <a href="mesa.space.html#Grid">mesa.space.Grid</a>:<br>
+<dl><dt><a name="EgyptGrid-default_val"><strong>default_val</strong></a>()</dt><dd><tt>Default&nbsp;value&nbsp;for&nbsp;new&nbsp;cell&nbsp;elements.</tt></dd></dl>
+
+<hr>
+Data descriptors inherited from <a href="mesa.space.html#Grid">mesa.space.Grid</a>:<br>
+<dl><dt><strong>__dict__</strong></dt>
+<dd><tt>dictionary&nbsp;for&nbsp;instance&nbsp;variables&nbsp;(if&nbsp;defined)</tt></dd>
+</dl>
+<dl><dt><strong>__weakref__</strong></dt>
+<dd><tt>list&nbsp;of&nbsp;weak&nbsp;references&nbsp;to&nbsp;the&nbsp;object&nbsp;(if&nbsp;defined)</tt></dd>
+</dl>
+</td></tr></table> <p>
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
+<tr bgcolor="#ffc8d8">
+<td colspan=3 valign=bottom>&nbsp;<br>
+<font color="#000000" face="helvetica, arial"><a name="EgyptModel">class <strong>EgyptModel</strong></a>(<a href="mesa.model.html#Model">mesa.model.Model</a>)</font></td></tr>
+    
+<tr bgcolor="#ffc8d8"><td rowspan=2><tt>&nbsp;&nbsp;&nbsp;</tt></td>
+<td colspan=2><tt>An&nbsp;agent-based&nbsp;model&nbsp;of&nbsp;Pre-Dynastic&nbsp;Egypt<br>&nbsp;</tt></td></tr>
+<tr><td>&nbsp;</td>
+<td width="100%"><dl><dt>Method resolution order:</dt>
+<dd><a href="egypt_model.html#EgyptModel">EgyptModel</a></dd>
+<dd><a href="mesa.model.html#Model">mesa.model.Model</a></dd>
+<dd><a href="builtins.html#object">builtins.object</a></dd>
+</dl>
+<hr>
+Methods defined here:<br>
+<dl><dt><a name="EgyptModel-__init__"><strong>__init__</strong></a>(self, w, h, starting_settlements=14, starting_households=7, starting_household_size=5, starting_grain=2000, min_competency=0.5, min_ambition=0.1, population_growth_rate_percentage=0.1, generational_variation=0.9, knowledge_radius=20, fallow_limit=4, distance_cost=10, land_rental_rate=0.5, allow_rental=True)</dt><dd><tt>Create&nbsp;a&nbsp;new&nbsp;model.&nbsp;Overload&nbsp;this&nbsp;method&nbsp;with&nbsp;the&nbsp;actual&nbsp;code&nbsp;to<br>
+start&nbsp;the&nbsp;model.<br>
+&nbsp;<br>
+Attributes:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;schedule:&nbsp;schedule&nbsp;<a href="builtins.html#object">object</a><br>
+&nbsp;&nbsp;&nbsp;&nbsp;running:&nbsp;a&nbsp;bool&nbsp;indicating&nbsp;if&nbsp;the&nbsp;model&nbsp;should&nbsp;continue&nbsp;running</tt></dd></dl>
+
+<dl><dt><a name="EgyptModel-step"><strong>step</strong></a>(self)</dt><dd><tt>Advance&nbsp;the&nbsp;model&nbsp;by&nbsp;one&nbsp;tick.</tt></dd></dl>
+
+<hr>
+Methods inherited from <a href="mesa.model.html#Model">mesa.model.Model</a>:<br>
+<dl><dt><a name="EgyptModel-next_id"><strong>next_id</strong></a>(self)</dt><dd><tt>Return&nbsp;the&nbsp;next&nbsp;unique&nbsp;ID&nbsp;for&nbsp;agents,&nbsp;increment&nbsp;current_id</tt></dd></dl>
+
+<dl><dt><a name="EgyptModel-reset_randomizer"><strong>reset_randomizer</strong></a>(self, seed=None)</dt><dd><tt>Reset&nbsp;the&nbsp;model&nbsp;random&nbsp;number&nbsp;generator.<br>
+&nbsp;<br>
+Args:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;seed:&nbsp;A&nbsp;new&nbsp;seed&nbsp;for&nbsp;the&nbsp;RNG;&nbsp;if&nbsp;None,&nbsp;reset&nbsp;using&nbsp;the&nbsp;current&nbsp;seed</tt></dd></dl>
+
+<dl><dt><a name="EgyptModel-run_model"><strong>run_model</strong></a>(self)</dt><dd><tt>Run&nbsp;the&nbsp;model&nbsp;until&nbsp;the&nbsp;end&nbsp;condition&nbsp;is&nbsp;reached.&nbsp;Overload&nbsp;as<br>
+needed.</tt></dd></dl>
+
+<hr>
+Static methods inherited from <a href="mesa.model.html#Model">mesa.model.Model</a>:<br>
+<dl><dt><a name="EgyptModel-__new__"><strong>__new__</strong></a>(cls, *args, **kwargs)</dt><dd><tt>Create&nbsp;a&nbsp;new&nbsp;model&nbsp;<a href="builtins.html#object">object</a>&nbsp;and&nbsp;instantiate&nbsp;its&nbsp;RNG&nbsp;automatically.</tt></dd></dl>
+
+<hr>
+Data descriptors inherited from <a href="mesa.model.html#Model">mesa.model.Model</a>:<br>
+<dl><dt><strong>__dict__</strong></dt>
+<dd><tt>dictionary&nbsp;for&nbsp;instance&nbsp;variables&nbsp;(if&nbsp;defined)</tt></dd>
+</dl>
+<dl><dt><strong>__weakref__</strong></dt>
+<dd><tt>list&nbsp;of&nbsp;weak&nbsp;references&nbsp;to&nbsp;the&nbsp;object&nbsp;(if&nbsp;defined)</tt></dd>
+</dl>
+</td></tr></table> <p>
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
+<tr bgcolor="#ffc8d8">
+<td colspan=3 valign=bottom>&nbsp;<br>
+<font color="#000000" face="helvetica, arial"><a name="FieldAgent">class <strong>FieldAgent</strong></a>(<a href="mesa.agent.html#Agent">mesa.agent.Agent</a>)</font></td></tr>
+    
+<tr bgcolor="#ffc8d8"><td rowspan=2><tt>&nbsp;&nbsp;&nbsp;</tt></td>
+<td colspan=2><tt>A&nbsp;field&nbsp;is&nbsp;a&nbsp;piece&nbsp;of&nbsp;land&nbsp;claimed&nbsp;by&nbsp;a&nbsp;household<br>&nbsp;</tt></td></tr>
+<tr><td>&nbsp;</td>
+<td width="100%"><dl><dt>Method resolution order:</dt>
+<dd><a href="egypt_model.html#FieldAgent">FieldAgent</a></dd>
+<dd><a href="mesa.agent.html#Agent">mesa.agent.Agent</a></dd>
+<dd><a href="builtins.html#object">builtins.object</a></dd>
+</dl>
+<hr>
+Methods defined here:<br>
+<dl><dt><a name="FieldAgent-__init__"><strong>__init__</strong></a>(self, unique_field_id, model, household)</dt><dd><tt>Create&nbsp;a&nbsp;new&nbsp;agent.</tt></dd></dl>
+
+<dl><dt><a name="FieldAgent-changeover"><strong>changeover</strong></a>(self)</dt></dl>
+
+<hr>
+Methods inherited from <a href="mesa.agent.html#Agent">mesa.agent.Agent</a>:<br>
+<dl><dt><a name="FieldAgent-step"><strong>step</strong></a>(self)</dt><dd><tt>A&nbsp;single&nbsp;step&nbsp;of&nbsp;the&nbsp;agent.</tt></dd></dl>
+
+<hr>
+Data descriptors inherited from <a href="mesa.agent.html#Agent">mesa.agent.Agent</a>:<br>
+<dl><dt><strong>__dict__</strong></dt>
+<dd><tt>dictionary&nbsp;for&nbsp;instance&nbsp;variables&nbsp;(if&nbsp;defined)</tt></dd>
+</dl>
+<dl><dt><strong>__weakref__</strong></dt>
+<dd><tt>list&nbsp;of&nbsp;weak&nbsp;references&nbsp;to&nbsp;the&nbsp;object&nbsp;(if&nbsp;defined)</tt></dd>
+</dl>
+<dl><dt><strong>random</strong></dt>
+</dl>
+</td></tr></table> <p>
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
+<tr bgcolor="#ffc8d8">
+<td colspan=3 valign=bottom>&nbsp;<br>
+<font color="#000000" face="helvetica, arial"><a name="Household">class <strong>Household</strong></a>(<a href="builtins.html#object">builtins.object</a>)</font></td></tr>
+    
+<tr bgcolor="#ffc8d8"><td rowspan=2><tt>&nbsp;&nbsp;&nbsp;</tt></td>
+<td colspan=2><tt>A&nbsp;household&nbsp;that&nbsp;aggregates&nbsp;n&nbsp;workers<br>&nbsp;</tt></td></tr>
+<tr><td>&nbsp;</td>
+<td width="100%">Methods defined here:<br>
+<dl><dt><a name="Household-__init__"><strong>__init__</strong></a>(self, starting_size, competency, ambition, starting_grain, settlement)</dt><dd><tt>Initialize&nbsp;self.&nbsp;&nbsp;See&nbsp;help(type(self))&nbsp;for&nbsp;accurate&nbsp;signature.</tt></dd></dl>
+
+<dl><dt><a name="Household-claim_fields"><strong>claim_fields</strong></a>(self)</dt><dd><tt>Allows&nbsp;households&nbsp;to&nbsp;decide&nbsp;(function&nbsp;of&nbsp;the&nbsp;field&nbsp;productivity&nbsp;compared&nbsp;to&nbsp;existing&nbsp;fields&nbsp;and&nbsp;ambition)&nbsp;to&nbsp;claim/&nbsp;not&nbsp;claim&nbsp;fields&nbsp;that&nbsp;fall&nbsp;within&nbsp;their&nbsp;knowledge&nbsp;radii</tt></dd></dl>
+
+<dl><dt><a name="Household-complete_claim"><strong>complete_claim</strong></a>(self, x, y)</dt><dd><tt>Once&nbsp;household&nbsp;determines&nbsp;whether&nbsp;or&nbsp;not&nbsp;to&nbsp;claim&nbsp;ownership,&nbsp;this&nbsp;methods&nbsp;sets&nbsp;new&nbsp;ownership</tt></dd></dl>
+
+<dl><dt><a name="Household-consume_grain"><strong>consume_grain</strong></a>(self)</dt><dd><tt>Each&nbsp;worker&nbsp;consumes&nbsp;grain.</tt></dd></dl>
+
+<dl><dt><a name="Household-farm"><strong>farm</strong></a>(self)</dt><dd><tt>Increase&nbsp;grain&nbsp;in&nbsp;proportion&nbsp;to&nbsp;field&nbsp;fertility&nbsp;and&nbsp;worker&nbsp;competency</tt></dd></dl>
+
+<dl><dt><a name="Household-generation_changeover"><strong>generation_changeover</strong></a>(self)</dt><dd><tt>Change&nbsp;competency&nbsp;and&nbsp;ambition&nbsp;values&nbsp;every&nbsp;10-15&nbsp;years&nbsp;to&nbsp;simulate&nbsp;a&nbsp;new&nbsp;head&nbsp;of&nbsp;household</tt></dd></dl>
+
+<dl><dt><a name="Household-population_shift"><strong>population_shift</strong></a>(self)</dt><dd><tt>Increase&nbsp;population&nbsp;stochastically&nbsp;in&nbsp;proportion&nbsp;to&nbsp;the&nbsp;population&nbsp;growth&nbsp;rate</tt></dd></dl>
+
+<dl><dt><a name="Household-release_field_claim"><strong>release_field_claim</strong></a>(self)</dt><dd><tt>Once&nbsp;a&nbsp;household&nbsp;dies&nbsp;field&nbsp;claims&nbsp;are&nbsp;released</tt></dd></dl>
+
+<dl><dt><a name="Household-rent_land"><strong>rent_land</strong></a>(self)</dt><dd><tt>if&nbsp;global&nbsp;variable&nbsp;'rent&nbsp;land'&nbsp;is&nbsp;on,&nbsp;ambitious&nbsp;households&nbsp;ae&nbsp;allowed&nbsp;to&nbsp;farm&nbsp;additional&nbsp;plots&nbsp;they&nbsp;don't&nbsp;own,&nbsp;after&nbsp;everyone&nbsp;has&nbsp;finished&nbsp;main&nbsp;farming/harvesting</tt></dd></dl>
+
+<dl><dt><a name="Household-storage_loss"><strong>storage_loss</strong></a>(self)</dt><dd><tt>Accounts&nbsp;for&nbsp;typical&nbsp;annual&nbsp;storage&nbsp;loss&nbsp;of&nbsp;agricultural&nbsp;product</tt></dd></dl>
+
+<hr>
+Data descriptors defined here:<br>
+<dl><dt><strong>__dict__</strong></dt>
+<dd><tt>dictionary&nbsp;for&nbsp;instance&nbsp;variables&nbsp;(if&nbsp;defined)</tt></dd>
+</dl>
+<dl><dt><strong>__weakref__</strong></dt>
+<dd><tt>list&nbsp;of&nbsp;weak&nbsp;references&nbsp;to&nbsp;the&nbsp;object&nbsp;(if&nbsp;defined)</tt></dd>
+</dl>
+</td></tr></table> <p>
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
+<tr bgcolor="#ffc8d8">
+<td colspan=3 valign=bottom>&nbsp;<br>
+<font color="#000000" face="helvetica, arial"><a name="SettlementAgent">class <strong>SettlementAgent</strong></a>(<a href="mesa.agent.html#Agent">mesa.agent.Agent</a>)</font></td></tr>
+    
+<tr bgcolor="#ffc8d8"><td rowspan=2><tt>&nbsp;&nbsp;&nbsp;</tt></td>
+<td colspan=2><tt>A&nbsp;settlement&nbsp;that&nbsp;aggregates&nbsp;n&nbsp;households&nbsp;and&nbsp;fields.<br>&nbsp;</tt></td></tr>
+<tr><td>&nbsp;</td>
+<td width="100%"><dl><dt>Method resolution order:</dt>
+<dd><a href="egypt_model.html#SettlementAgent">SettlementAgent</a></dd>
+<dd><a href="mesa.agent.html#Agent">mesa.agent.Agent</a></dd>
+<dd><a href="builtins.html#object">builtins.object</a></dd>
+</dl>
+<hr>
+Methods defined here:<br>
+<dl><dt><a name="SettlementAgent-__init__"><strong>__init__</strong></a>(self, unique_id, num_households, starting_household_size, starting_grain, min_competency, min_ambition, model)</dt><dd><tt>Create&nbsp;a&nbsp;new&nbsp;agent.</tt></dd></dl>
+
+<dl><dt><a name="SettlementAgent-grain"><strong>grain</strong></a>(self)</dt></dl>
+
+<dl><dt><a name="SettlementAgent-workers"><strong>workers</strong></a>(self)</dt></dl>
+
+<hr>
+Methods inherited from <a href="mesa.agent.html#Agent">mesa.agent.Agent</a>:<br>
+<dl><dt><a name="SettlementAgent-step"><strong>step</strong></a>(self)</dt><dd><tt>A&nbsp;single&nbsp;step&nbsp;of&nbsp;the&nbsp;agent.</tt></dd></dl>
+
+<hr>
+Data descriptors inherited from <a href="mesa.agent.html#Agent">mesa.agent.Agent</a>:<br>
+<dl><dt><strong>__dict__</strong></dt>
+<dd><tt>dictionary&nbsp;for&nbsp;instance&nbsp;variables&nbsp;(if&nbsp;defined)</tt></dd>
+</dl>
+<dl><dt><strong>__weakref__</strong></dt>
+<dd><tt>list&nbsp;of&nbsp;weak&nbsp;references&nbsp;to&nbsp;the&nbsp;object&nbsp;(if&nbsp;defined)</tt></dd>
+</dl>
+<dl><dt><strong>random</strong></dt>
+</dl>
+</td></tr></table></td></tr></table><p>
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
+<tr bgcolor="#eeaa77">
+<td colspan=3 valign=bottom>&nbsp;<br>
+<font color="#ffffff" face="helvetica, arial"><big><strong>Functions</strong></big></font></td></tr>
+    
+<tr><td bgcolor="#eeaa77"><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</tt></td><td>&nbsp;</td>
+<td width="100%"><dl><dt><a name="-compute_gini"><strong>compute_gini</strong></a>(model)</dt><dd><tt>#&nbsp;data&nbsp;collector&nbsp;methods</tt></dd></dl>
+ <dl><dt><a name="-compute_mean_population"><strong>compute_mean_population</strong></a>(model)</dt></dl>
+ <dl><dt><a name="-compute_mean_wealth"><strong>compute_mean_wealth</strong></a>(model)</dt></dl>
+ <dl><dt><a name="-compute_total_population"><strong>compute_total_population</strong></a>(model)</dt></dl>
+ <dl><dt><a name="-compute_total_wealth"><strong>compute_total_wealth</strong></a>(model)</dt></dl>
+ <dl><dt><a name="-sqrt"><strong>sqrt</strong></a>(...)</dt><dd><tt><a href="#-sqrt">sqrt</a>(x)<br>
+&nbsp;<br>
+Return&nbsp;the&nbsp;square&nbsp;root&nbsp;of&nbsp;x.</tt></dd></dl>
+</td></tr></table><p>
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
+<tr bgcolor="#55aa55">
+<td colspan=3 valign=bottom>&nbsp;<br>
+<font color="#ffffff" face="helvetica, arial"><big><strong>Data</strong></big></font></td></tr>
+    
+<tr><td bgcolor="#55aa55"><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</tt></td><td>&nbsp;</td>
+<td width="100%"><strong>ANNUAL_PER_PERSON_GRAIN_CONSUMPTION</strong> = 160<br>
+<strong>PATCH_MAX_POTENTIAL_YIELD</strong> = 2475<br>
+<strong>e</strong> = 2.718281828459045<br>
+<strong>pi</strong> = 3.141592653589793</td></tr></table>
+</body></html>
