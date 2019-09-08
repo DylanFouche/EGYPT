@@ -186,6 +186,14 @@ def launch(width, height, port=None):
             'allow_rental',
             value=True,
             description= 'Allow Land Rental'),
+        'land_rental_rate': UserSettableParameter(
+            'slider',
+            'land_rental_rate',
+            value=0.5,
+            min_value=0.3,
+            max_value=0.6,
+            step=0.05,
+            description='Land Rental Rate'),
         'w': width,
         'h': height
     }

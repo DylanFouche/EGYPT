@@ -8,7 +8,6 @@ from math import sqrt, pi, e
 # constants in NetLogo source
 PATCH_MAX_POTENTIAL_YIELD = 2475
 ANNUAL_PER_PERSON_GRAIN_CONSUMPTION = 160
-LAND_RENTAL_RATE = 20  # number from 0 to 100 used as a percentage
 
 
 # data collector methods
@@ -286,7 +285,7 @@ class Household():
             harvest_chance = self.random()
             if harvest_chance < (self.competency * self.ambition):
                 extra_grain = best_field.grain * (
-                    (1 - LAND_RENTAL_RATE / 100))  # seeding cost was making it go negative
+                    (1 - self.settlement.model.land_rental_rate))  # seeding cost was making it go negative
                 if extra_grain > 0 or True:
                     total_harvest += extra_grain
                     best_field.harvested = True
@@ -337,7 +336,9 @@ class EgyptModel(Model):
                  knowledge_radius=20,
                  fallow_limit=4,
                  distance_cost=10,
+                 land_rental_rate=0.5,
                  allow_rental=True):
+        self.land_rental_rate = land_rental_rate
         self.allow_rental = allow_rental
         self.starting_settlements = starting_settlements
         self.starting_households = starting_households
