@@ -221,8 +221,9 @@ class Household():
                 for field_y in range(ymin, ymax):
                     if (field_x - household_x) ** 2 + (field_y - household_y) ** 2 <= self.settlement.model.knowledge_radius ** 2:
                         
-                        if self.settlement.model.grid.fertility[field_y][
-                            field_x] > best_fertility and self.settlement.model.grid.is_cell_empty((field_x, field_y,)):
+                        if self.settlement.model.grid.fertility[field_y][field_x] > best_fertility and \
+                                self.settlement.model.grid.is_cell_empty((field_x, field_y,)):
+                            
                             best_X_fertility = field_x
                             best_Y_fertility = field_y
                             best_fertility = self.settlement.model.grid.fertility[field_y][field_x]
@@ -247,7 +248,6 @@ class Household():
     def rent_land(self):
         """if global variable 'rent land' is on, ambitious households ae allowed to farm additional plots they don't own, after everyone has finished main farming/harvesting """
         total_harvest = 0
-        
         for i in range((self.workers - self.workers_worked) // 2):
             best_harvest = 0
             best_field = None
@@ -267,15 +267,15 @@ class Household():
             for field_x in range(xmin, xmax):
                 for field_y in range(ymin, ymax):
                     if (field_x - household_x) ** 2 + (field_y - household_y) ** 2 <= self.settlement.model.knowledge_radius ** 2:
-                        field_cell = self.settlement.model.grid.get_cell_list_contents((field_x, field_y))
-                        if field_cell and isinstance(field_cell[0], FieldAgent):
+                        field_cell = self.settlement.model.grid.grid[field_x][field_y]
+                        if isinstance(field_cell, FieldAgent):
                             
                             this_harvest = ((self.settlement.model.grid.fertility[field_y][field_x] * PATCH_MAX_POTENTIAL_YIELD * self.competency) - \
                                             sqrt((field_x - household_x) ** 2 + (field_y - household_y) ** 2) * self.settlement.model.distance_cost)
                             
-                            if not field_cell[0].harvested and this_harvest >= best_harvest:
+                            if not field_cell.harvested and this_harvest >= best_harvest:
                                 best_harvest = this_harvest
-                                best_field = field_cell[0]
+                                best_field = field_cell
             
             harvest_chance = self.settlement.random.uniform(0, 1)
             if best_field is not None and best_field not in self.fields and harvest_chance < (self.competency * self.ambition):
