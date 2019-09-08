@@ -277,7 +277,7 @@ class Household():
             harvest_chance = self.random()
             if harvest_chance < (self.competency * self.ambition):
                 extra_grain = best_field.grain * (
-                    (1 - self.settlement.model.land_rental_rate))  # seeding cost was making it go negative
+                    (1 - self.settlement.model.land_rental_rate)-300)  # seeding cost was making it go negative
                 if extra_grain > 0 or True:
                     total_harvest += extra_grain
                     best_field.harvested = True
