@@ -8,8 +8,9 @@ from matplotlib.colors import Normalize
 from mesa.visualization.UserParam import UserSettableParameter
 from mesa.visualization.modules import ChartModule
 from mesa.visualization.ModularVisualization import ModularServer, VisualizationElement
-from egypt_model import EgyptModel, Household, FieldAgent, SettlementAgent
+from egypt_model import EgyptModel, FieldAgent, SettlementAgent
 
+# colours chosen to be distinct and visible against the green fertility background
 colours = ['red',
            'yellow',
            'pink',
@@ -18,7 +19,15 @@ colours = ['red',
            'purple',
            'cyan',
            'orange',
-           'brown']
+           'brown',
+           'grey',
+           'magenta',
+           'chocolate',
+           'darkcyan',
+           'darkorchid',
+           'dodgerblue',
+           'tomato',
+           'yellowgreen']
 
 
 def __agent_portrayal__(agent):

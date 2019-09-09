@@ -240,7 +240,7 @@ class Household():
 
     def complete_claim(self, x, y):
         """Once household determines whether or not to claim ownership, this methods sets new ownership"""
-        field = FieldAgent(str(self.settlement.random.uniform(0, 1)), self.settlement.model, self)
+        field = FieldAgent(self.settlement.random.random(), self.settlement.model, self)
         self.settlement.model.grid.position_agent(field, x, y)
         self.fields.append(field)
         self.settlement.model.fields.append(field)
@@ -367,7 +367,7 @@ class EgyptModel(Model):
         # Create agents
         for i in range(self.starting_settlements):
             agent = SettlementAgent(
-                unique_id=i,
+                unique_id=self.random.random(),
                 num_households=starting_households,
                 starting_household_size=starting_household_size,
                 starting_grain=starting_grain,
