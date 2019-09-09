@@ -17,7 +17,7 @@ def compare(O, E):
 
 
 # read csv file
-data = pd.read_csv('src/validation/output.csv', delimiter=',', skipinitialspace=True)
+data = pd.read_csv('validation_output/output.csv', delimiter=',', skipinitialspace=True)
 
 feature_column_names = data.keys()[1:11]
 
@@ -67,5 +67,5 @@ for i, metric_pair in enumerate(metric_pairs):
 
 plt.tight_layout()
 plt.subplots_adjust(wspace=0.4)
-plt.savefig('src/validation/regression.pdf', format='pdf')
+plt.savefig('validation_output/regression.pdf', format='pdf')
 plt.show()

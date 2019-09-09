@@ -5,7 +5,7 @@ import egypt_model
 
 data = []
 
-with open('src/validation/revised Egypt model 2019 no GIS Capstone-table.csv', 'r') as file:
+with open('validation_output/revised Egypt model 2019 no GIS Capstone-table.csv', 'r') as file:
     reader = csv.reader(file, skipinitialspace=True)
     for line in reader:
         data.append(line)
@@ -35,7 +35,7 @@ runs = []
 for key in sorted(temp):
     runs.append(temp[key])
 
-f = open('src/validation/output.csv', 'w')
+f = open('validation_output/output.csv', 'w')
 
 f.write(', '.join(headings[:step_index + 1] + ['python-gini', 'netlogo-gini-index-reserve', 'python-total-population',
                                                'netlogo-total-population', 'python-total-wealth',
