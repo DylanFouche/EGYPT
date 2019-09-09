@@ -158,7 +158,7 @@ class Household():
         populate_chance = self.settlement.random.uniform(0, 1)
         # criteria for increasing population as per netLogo implementation
         if (compute_total_population(self.settlement.model) <= \
-                (self.settlement.model.starting_population * (1 + self.settlement.model.population_growth_rate) ** self.settlement.model.ticks)) \
+                (self.settlement.model.starting_population * (1 + self.settlement.model.population_growth_rate/100) ** self.settlement.model.ticks)) \
                 and (populate_chance > 0.5):
 
             self.workers += 1
