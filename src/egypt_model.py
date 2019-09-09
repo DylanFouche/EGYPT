@@ -336,7 +336,7 @@ class EgyptModel(Model):
                  distance_cost=10,
                  land_rental_rate=0.5,
                  allow_rental=True,
-                 annual_competency_increase=1):
+                 annual_competency_increase=0):
         self.land_rental_rate = land_rental_rate
         self.allow_rental = allow_rental
         self.starting_settlements = starting_settlements
