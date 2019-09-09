@@ -1,4 +1,8 @@
-//Template modified from https://github.com/projectmesa/mesa/blob/master/mesa/visualization/templates/js/CanvasModule.js
+/*
+Template modified from https://github.com/projectmesa/mesa/blob/master/mesa/visualization/templates/js/CanvasModule.js
+The only change made was to comment out line 37
+This hides the grid lines in the egypt_gui.py visualisation
+ */
 
 var CanvasModule = function(canvas_width, canvas_height, grid_width, grid_height) {
 	// Create the element
