@@ -184,7 +184,7 @@ def launch(width, height, port=None):
         'allow_rental': UserSettableParameter(
             'checkbox',
             'allow_rental',
-            value=True,
+            value=False,
             description= 'Allow Land Rental'),
         'land_rental_rate': UserSettableParameter(
             'slider',
