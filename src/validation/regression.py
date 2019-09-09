@@ -36,7 +36,7 @@ X = X[:, X.std(axis=0) != 0]
 X = (X - X.mean(axis=0)) / X.std(axis=0)
 
 # set up plot
-fig, ax = plt.subplots(2, len(metric_pairs), sharex='col', sharey='row')
+fig, ax = plt.subplots(2, len(metric_pairs), sharex='col', sharey='row', figsize=plt.figaspect(0.55))
 ax[1][0].set_ylabel('-log(p-value)')
 ax[0][0].set_ylabel('coefficient')
 
@@ -66,4 +66,6 @@ for i, metric_pair in enumerate(metric_pairs):
     ax[1][i].set_xticklabels(feature_column_names, rotation=270)
 
 plt.tight_layout()
+plt.subplots_adjust(wspace=0.4)
+plt.savefig('src/validation/regression.pdf', format='pdf')
 plt.show()
