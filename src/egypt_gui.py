@@ -1,6 +1,7 @@
 from collections import defaultdict
 
 import numpy as np
+from math import sqrt
 from matplotlib.colors import to_hex
 from matplotlib.cm import ScalarMappable
 from matplotlib.colors import Normalize
@@ -27,15 +28,16 @@ def __agent_portrayal__(agent):
             "Color": colours[hash(agent.unique_id) % len(colours)],
             "Filled": "true",
             "Layer": 2,
-            "r": agent.workers() / 15
+            "r": sqrt(agent.workers() / 15)
         }
-    elif type(agent) == FieldAgent and agent.household is not None:
+    elif type(agent) == FieldAgent:
         portrayal = {
-            "Shape": "circle",
+            "Shape": "rect",
             "Color": colours[hash(agent.household.settlement.unique_id) % len(colours)],
             "Filled": "true",
             "Layer": 1,
-            "r": 0.5
+            "h": 0.2,
+            "w": 0.2
         }
     else:
         portrayal = None
@@ -161,7 +163,7 @@ def launch(width, height, port=None):
         'knowledge_radius': UserSettableParameter(
             'slider',
             'knowledge_radius',
-            value=20,
+            value=5,
             min_value=5,
             max_value=40,
             description='Household Knowledge Radius'),
@@ -205,7 +207,7 @@ def launch(width, height, port=None):
         'annual_competency_increase': UserSettableParameter(
             'slider',
             'annual_competency_increase',
-            value=1,
+            value=0,
             min_value=0,
             max_value=10,
             step=0.25,
