@@ -1,5 +1,5 @@
 # EGYPT
-CSC3002S Capstone Project
+An Agent-Based Simulation of Predynastic Egypt.
 
 ## Quick start
 Run the following command from the project root directory to install and launch the simulation:
