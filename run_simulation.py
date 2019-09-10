@@ -2,7 +2,6 @@
 
 import os
 import sys
-import inspect
 
 if len(sys.argv) != 3:
     print("Usage:\tpython3 run_simulation.py [grid_width] [grid_height]")
@@ -13,6 +12,7 @@ else:
     run_cmd = "export PYTHONPATH=$PYTHONPATH:`pwd`:`pwd`/src && python3 src/simulations/gui_simulation.py " + grid_width + " " + grid_height + " > /dev/null"
 
     print("Checking dependencies...")
-    os.system("pip3 install -r requirements.txt > /dev/null")
+    os.system("pip3 install -r requirements.txt")
     print("Launching simulation...")
+    print('Press ctrl-c to exit')
     os.system(run_cmd)
