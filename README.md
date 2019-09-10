@@ -56,3 +56,11 @@ python3 src/validation/regression.py
 ```
 
 This will generate, display and save the visualisation of the analysis.
+
+## Unit Testing
+
+### Run all unit tests
+
+```bash
+python3 src/egypt_model_test.py
+```
